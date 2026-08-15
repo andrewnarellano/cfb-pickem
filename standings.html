@@ -5,21 +5,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <title>CFB Pick'em — Standings</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Sofia+Sans+Extra+Condensed:wght@700;800&family=Spectral:wght@600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #0d1117; --surface: #161b22; --card: #1c2333;
+      --bg: #0f0505; --surface: #1c0a0a; --card: #240d0d;
       --border: rgba(255,255,255,0.08);
-      --orange: #f97316; --orange-dim: rgba(249,115,22,0.12);
+      --orange: #500000; --orange-dim: rgba(80,0,0,0.3);
+      --yellow: #FCE300;
+      --navy: #2F3E51;
       --green: #22c55e; --red: #ef4444;
-      --text: #e6edf3; --muted: rgba(230,237,243,0.5); --faint: rgba(230,237,243,0.2);
+      --text: #ffffff; --muted: rgba(214,211,196,0.75); --faint: rgba(214,211,196,0.3);
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html { background: var(--bg); -webkit-text-size-adjust: 100%; }
-    body { background: var(--bg); min-height: 100vh; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: var(--text); padding-left: env(safe-area-inset-left); padding-right: env(safe-area-inset-right); }
+    body { background: var(--bg); min-height: 100vh; font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif; color: var(--text); padding-left: env(safe-area-inset-left); padding-right: env(safe-area-inset-right); }
 
     header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 10; }
-    .header-left h1 { font-size: 1.1rem; font-weight: 800; }
-    .header-left .subtitle { font-size: 0.72rem; color: var(--orange); margin-top: 2px; font-weight: 600; }
+    .header-left h1 { font-size: 1.1rem; font-weight: 800; font-family: 'Sofia Sans Extra Condensed', sans-serif; letter-spacing: 0.5px; }
+    .header-left .subtitle { font-size: 0.72rem; color: var(--yellow); margin-top: 2px; font-weight: 600; }
     .nav-buttons { display: flex; gap: 8px; }
     .nav-btn { background: transparent; color: var(--muted); border: 1px solid var(--border); padding: 7px 14px; border-radius: 6px; font-weight: 700; font-size: 0.8rem; cursor: pointer; text-decoration: none; display: inline-block; transition: all 0.15s; white-space: nowrap; }
     .nav-btn:hover { color: var(--text); border-color: rgba(255,255,255,0.2); }
@@ -67,7 +70,7 @@
 
     /* Weekly breakdown table */
     .weekly-section { margin-bottom: 12px; }
-    .weekly-title { font-size: 0.65rem; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--orange); margin-bottom: 12px; }
+    .weekly-title { font-size: 0.65rem; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--yellow); margin-bottom: 12px; font-family: 'Sofia Sans Extra Condensed', sans-serif; }
     .weekly-table-wrap { background: var(--card); border-radius: 10px; border: 1px solid var(--border); overflow-x: auto; }
     .weekly-table { width: 100%; border-collapse: collapse; min-width: 500px; }
     .weekly-table thead th { background: rgba(0,0,0,0.25); padding: 9px 14px; text-align: right; font-size: 0.6rem; font-weight: 800; letter-spacing: 0.7px; color: var(--muted); text-transform: uppercase; border-bottom: 1px solid var(--border); white-space: nowrap; }

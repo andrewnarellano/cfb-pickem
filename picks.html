@@ -5,22 +5,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <title>CFB Pick'em — Picks</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Sofia+Sans+Extra+Condensed:wght@700;800&family=Spectral:wght@600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #0d1117; --surface: #161b22; --card: #1c2333;
+      --bg: #0f0505; --surface: #1c0a0a; --card: #240d0d;
       --border: rgba(255,255,255,0.08);
-      --orange: #f97316; --orange-dim: rgba(249,115,22,0.12);
+      --orange: #500000; --orange-dim: rgba(80,0,0,0.3);
+      --yellow: #FCE300;
+      --navy: #2F3E51;
       --green: #22c55e; --green-dim: rgba(34,197,94,0.12);
       --red: #ef4444; --red-dim: rgba(239,68,68,0.12);
-      --text: #e6edf3; --muted: rgba(230,237,243,0.5); --faint: rgba(230,237,243,0.2);
+      --text: #ffffff; --muted: rgba(214,211,196,0.75); --faint: rgba(214,211,196,0.3);
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html { background: var(--bg); -webkit-text-size-adjust: 100%; }
-    body { background: var(--bg); min-height: 100vh; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: var(--text); padding-left: env(safe-area-inset-left); padding-right: env(safe-area-inset-right); }
+    body { background: var(--bg); min-height: 100vh; font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif; color: var(--text); padding-left: env(safe-area-inset-left); padding-right: env(safe-area-inset-right); }
 
     header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 10; }
-    .header-left h1 { font-size: 1.1rem; font-weight: 800; }
-    .header-left .subtitle { font-size: 0.72rem; color: var(--orange); margin-top: 2px; font-weight: 600; }
+    .header-left h1 { font-size: 1.1rem; font-weight: 800; font-family: 'Sofia Sans Extra Condensed', sans-serif; letter-spacing: 0.5px; }
+    .header-left .subtitle { font-size: 0.72rem; color: var(--yellow); margin-top: 2px; font-weight: 600; }
     .nav-buttons { display: flex; gap: 8px; }
     .nav-btn { background: transparent; color: var(--muted); border: 1px solid var(--border); padding: 7px 14px; border-radius: 6px; font-weight: 700; font-size: 0.8rem; cursor: pointer; text-decoration: none; display: inline-block; transition: all 0.15s; white-space: nowrap; }
     .nav-btn:hover { color: var(--text); border-color: rgba(255,255,255,0.2); }
@@ -35,7 +38,7 @@
     @media (max-width: 700px) { .nav-buttons { display: none; } .hamburger { display: block; } header { padding: 12px 16px; } }
 
     .week-bar { background: var(--surface); border-bottom: 1px solid var(--border); padding: 10px 24px; display: flex; align-items: center; gap: 12px; }
-    .week-label { font-size: 0.78rem; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--orange); flex: 1; text-align: center; }
+    .week-label { font-size: 0.78rem; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--yellow); flex: 1; text-align: center; font-family: 'Sofia Sans Extra Condensed', sans-serif; }
     .week-nav-btn { background: transparent; border: 1px solid var(--border); color: var(--muted); border-radius: 5px; padding: 5px 12px; font-size: 0.75rem; font-weight: 700; cursor: pointer; transition: all 0.15s; font-family: inherit; }
     .week-nav-btn:hover:not(:disabled) { color: var(--text); border-color: rgba(255,255,255,0.2); }
     .week-nav-btn:disabled { opacity: 0.3; cursor: default; }
@@ -91,7 +94,7 @@
     .deadline-text { font-size: 0.6rem; color: var(--faint); font-weight: 600; }
     .deadline-text.closed { color: rgba(239,68,68,0.6); }
     .pick-status-badge { font-size: 0.62rem; font-weight: 800; letter-spacing: 0.5px; padding: 3px 8px; border-radius: 4px; }
-    .pick-status-badge.set { background: var(--orange-dim); color: var(--orange); }
+    .pick-status-badge.set { background: rgba(80,0,0,0.4); color: var(--yellow); }
 
     .picks-table-wrap { border-top: 1px solid var(--border); display: none; }
     .picks-table-wrap.visible { display: block; }
@@ -102,13 +105,13 @@
     .result-win { color: var(--green); font-weight: 700; }
     .result-loss { color: var(--red); font-weight: 700; }
     .result-push { color: var(--muted); font-weight: 600; }
-    .conf-pill { display: inline-block; background: rgba(249,115,22,0.15); color: var(--orange); font-weight: 800; font-size: 0.72rem; padding: 2px 7px; border-radius: 4px; }
+    .conf-pill { display: inline-block; background: rgba(80,0,0,0.4); color: var(--yellow); font-weight: 800; font-size: 0.72rem; padding: 2px 7px; border-radius: 4px; }
 
     .submit-bar { position: fixed; bottom: 0; left: 0; right: 0; background: var(--surface); border-top: 1px solid var(--border); padding: 12px 20px; padding-bottom: calc(12px + env(safe-area-inset-bottom)); display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 20; }
     .submit-info { font-size: 0.75rem; color: var(--muted); }
     .submit-info strong { color: var(--text); }
-    .submit-btn-main { background: var(--orange); color: #fff; border: none; padding: 11px 28px; border-radius: 7px; font-weight: 800; font-size: 0.88rem; cursor: pointer; white-space: nowrap; font-family: inherit; transition: background 0.15s; }
-    .submit-btn-main:hover:not([disabled]) { background: #ea6c10; }
+    .submit-btn-main { background: var(--orange); color: #fff; border: none; padding: 11px 28px; border-radius: 7px; font-weight: 700; font-size: 0.88rem; cursor: pointer; white-space: nowrap; font-family: 'Spectral', serif; transition: background 0.15s; }
+    .submit-btn-main:hover:not([disabled]) { background: #6b0000; }
     .submit-btn-main[disabled] { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.3); cursor: not-allowed; }
 
     .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.72); z-index: 200; align-items: center; justify-content: center; padding: 20px; }
@@ -122,7 +125,7 @@
     .modal-field input:focus { border-color: var(--orange); }
     .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
     .modal-cancel { background: rgba(255,255,255,0.07); color: var(--text); border: none; padding: 9px 16px; border-radius: 6px; font-weight: 700; font-size: 0.82rem; cursor: pointer; font-family: inherit; }
-    .modal-confirm { background: var(--orange); color: #fff; border: none; padding: 9px 20px; border-radius: 6px; font-weight: 800; font-size: 0.82rem; cursor: pointer; font-family: inherit; }
+    .modal-confirm { background: var(--orange); color: #fff; border: none; padding: 9px 20px; border-radius: 6px; font-weight: 700; font-size: 0.82rem; cursor: pointer; font-family: 'Spectral', serif; }
 
     @media (max-width: 500px) {
       .content { padding: 14px 12px 100px; }

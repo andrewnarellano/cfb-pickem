@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <title>CFB Pick'em — Standings</title>
+  <style>
+    :root {
+      --bg: #0d1117; --surface: #161b22; --card: #1c2333;
+      --border: rgba(255,255,255,0.08);
+      --orange: #f97316; --orange-dim: rgba(249,115,22,0.12);
+      --green: #22c55e; --red: #ef4444;
+      --text: #e6edf3; --muted: rgba(230,237,243,0.5); --faint: rgba(230,237,243,0.2);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { background: var(--bg); -webkit-text-size-adjust: 100%; }
+    body { background: var(--bg); min-height: 100vh; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: var(--text); padding-left: env(safe-area-inset-left); padding-right: env(safe-area-inset-right); }
+
+    header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 10; }
+    .header-left h1 { font-size: 1.1rem; font-weight: 800; }
+    .header-left .subtitle { font-size: 0.72rem; color: var(--orange); margin-top: 2px; font-weight: 600; }
+    .nav-buttons { display: flex; gap: 8px; }
+    .nav-btn { background: transparent; color: var(--muted); border: 1px solid var(--border); padding: 7px 14px; border-radius: 6px; font-weight: 700; font-size: 0.8rem; cursor: pointer; text-decoration: none; display: inline-block; transition: all 0.15s; white-space: nowrap; }
+    .nav-btn:hover { color: var(--text); border-color: rgba(255,255,255,0.2); }
+    .nav-btn.active { background: var(--orange); color: #fff; border-color: var(--orange); }
+    .hamburger { display: none; position: relative; font-size: 1.4rem; cursor: pointer; background: none; border: none; color: var(--orange); padding: 4px 8px; border-radius: 4px; line-height: 1; }
+    .nav-dropdown { display: none; position: absolute; top: calc(100% + 10px); right: 0; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 8px 24px rgba(0,0,0,0.55); min-width: 170px; z-index: 100; overflow: hidden; }
+    .nav-dropdown a { display: block; padding: 12px 16px; color: var(--text); text-decoration: none; font-weight: 600; font-size: 0.88rem; border-bottom: 1px solid var(--border); transition: background 0.12s; }
+    .nav-dropdown a:last-child { border-bottom: none; }
+    .nav-dropdown a:hover { background: rgba(255,255,255,0.06); }
+    .nav-dropdown a.active { color: var(--orange); }
+    .nav-dropdown.open { display: block; }
+    @media (max-width: 700px) { .nav-buttons { display: none; } .hamburger { display: block; } header { padding: 12px 16px; } }
+
+    .content { padding: 24px 20px 48px; max-width: 720px; margin: 0 auto; }
+    .loading { text-align: center; padding: 60px 20px; color: var(--muted); font-size: 0.9rem; }
+
+    .season-header { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 20px; }
+    .season-title { font-size: 1.1rem; font-weight: 800; }
+    .season-sub { font-size: 0.72rem; color: var(--muted); }
+
+    /* Leaderboard */
+    .leaderboard { background: var(--card); border-radius: 10px; border: 1px solid var(--border); overflow: hidden; margin-bottom: 28px; }
+    .lb-table { width: 100%; border-collapse: collapse; }
+    .lb-table thead th { background: rgba(0,0,0,0.25); padding: 10px 16px; text-align: left; font-size: 0.6rem; font-weight: 800; letter-spacing: 0.7px; color: var(--muted); text-transform: uppercase; border-bottom: 1px solid var(--border); }
+    .lb-table thead th.right { text-align: right; }
+    .lb-table tbody td { padding: 14px 16px; border-bottom: 1px solid rgba(255,255,255,0.04); vertical-align: middle; }
+    .lb-table tbody tr:last-child td { border-bottom: none; }
+    .lb-table tbody tr:hover td { background: rgba(255,255,255,0.02); }
+
+    .rank-col { width: 40px; font-size: 1rem; font-weight: 800; color: var(--muted); }
+    .rank-col.gold { color: #f5c542; }
+    .rank-col.silver { color: #a0a8b8; }
+    .rank-col.bronze { color: #cd7f32; }
+    .name-col { font-size: 0.92rem; font-weight: 700; }
+    .pts-col { text-align: right; font-size: 1.1rem; font-weight: 800; }
+    .pts-col.pos { color: var(--green); }
+    .pts-col.neg { color: var(--red); }
+    .pts-col.zero { color: var(--muted); }
+    .record-col { text-align: right; font-size: 0.78rem; color: var(--muted); }
+    .pct-col { text-align: right; font-size: 0.78rem; color: var(--faint); }
+    .bar-col { width: 120px; padding-right: 20px !important; }
+    .pts-bar-wrap { height: 6px; background: rgba(255,255,255,0.07); border-radius: 3px; overflow: hidden; }
+    .pts-bar { height: 100%; border-radius: 3px; background: var(--orange); transition: width 0.4s; }
+    .pts-bar.neg { background: var(--red); }
+
+    /* Weekly breakdown table */
+    .weekly-section { margin-bottom: 12px; }
+    .weekly-title { font-size: 0.65rem; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--orange); margin-bottom: 12px; }
+    .weekly-table-wrap { background: var(--card); border-radius: 10px; border: 1px solid var(--border); overflow-x: auto; }
+    .weekly-table { width: 100%; border-collapse: collapse; min-width: 500px; }
+    .weekly-table thead th { background: rgba(0,0,0,0.25); padding: 9px 14px; text-align: right; font-size: 0.6rem; font-weight: 800; letter-spacing: 0.7px; color: var(--muted); text-transform: uppercase; border-bottom: 1px solid var(--border); white-space: nowrap; }
+    .weekly-table thead th:first-child { text-align: left; }
+    .weekly-table tbody td { padding: 11px 14px; border-bottom: 1px solid rgba(255,255,255,0.04); text-align: right; font-size: 0.82rem; font-weight: 600; }
+    .weekly-table tbody td:first-child { text-align: left; font-weight: 700; }
+    .weekly-table tbody tr:last-child td { border-bottom: none; }
+    .wk-pos { color: var(--green); }
+    .wk-neg { color: var(--red); }
+    .wk-zero { color: var(--muted); }
+    .wk-na { color: var(--faint); }
+
+    @media (max-width: 500px) {
+      .content { padding: 14px 12px 40px; }
+      .bar-col { display: none; }
+      .pct-col { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <h1>CFB Pick'em</h1>
+    <div class="subtitle">Against the Spread · 2026 Season</div>
+  </div>
+  <div class="nav-buttons">
+    <a href="picks.html" class="nav-btn">Picks</a>
+    <a href="scoreboard.html" class="nav-btn">Scoreboard</a>
+    <a href="standings.html" class="nav-btn active">Standings</a>
+  </div>
+  <button class="hamburger" id="hamburger" aria-label="Menu">&#9776;
+    <div class="nav-dropdown" id="navDropdown">
+      <a href="picks.html">Picks</a>
+      <a href="scoreboard.html">Scoreboard</a>
+      <a href="standings.html" class="active">Standings</a>
+    </div>
+  </button>
+</header>
+
+<div class="content" id="content">
+  <div class="loading">Loading standings...</div>
+</div>
+
+<script>
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbxof2sk_1jM7YJLGbUALWdrcuROeP3YnxKA60WxU_QtTib9D_QMB9qiWYsfY0Mns26VYg/exec';
+const ESPN = 'http://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard';
+
+init();
+
+async function init() {
+  try {
+    const allPicks = await fetch(`${GAS_URL}?action=getAllPicks`).then(r => r.json());
+    if (!allPicks.length) {
+      document.getElementById('content').innerHTML = '<div class="loading">No picks yet this season.</div>';
+      return;
+    }
+
+    // Find all unique week+year combos
+    const weeks = [...new Set(allPicks.map(p => `${p.year}_${p.week}`))].sort();
+
+    // Fetch ESPN scores for each week
+    const espnByWeek = {};
+    await Promise.all(weeks.map(async wk => {
+      const [year, week] = wk.split('_');
+      try {
+        const data = await fetch(`${ESPN}?week=${week}&season=${year}&seasontype=2`).then(r => r.json());
+        espnByWeek[wk] = parseGames(data.events || []);
+      } catch(e) { espnByWeek[wk] = []; }
+    }));
+
+    render(allPicks, weeks, espnByWeek);
+  } catch(e) {
+    document.getElementById('content').innerHTML = '<div class="loading">Failed to load standings.</div>';
+  }
+}
+
+function parseGames(events) {
+  return events.map(ev => {
+    const comp = ev.competitions[0];
+    const home = comp.competitors.find(c => c.homeAway === 'home');
+    const away = comp.competitors.find(c => c.homeAway === 'away');
+    const odds = comp.odds?.[0];
+    const st = comp.status?.type;
+    return {
+      id: ev.id, homeTeam: home.team.displayName, awayTeam: away.team.displayName,
+      homeScore: parseInt(home.score)||0, awayScore: parseInt(away.score)||0,
+      spread: odds?.spread ?? null, state: st?.state || 'pre', completed: st?.completed || false,
+    };
+  });
+}
+
+function computeResult(pickedTeam, g) {
+  if (!g || (!g.completed && g.state !== 'in')) return null;
+  if (g.spread === null) return null;
+  const cover = (g.homeScore - g.awayScore) + g.spread;
+  if (Math.abs(cover) < 0.01) return 'PUSH';
+  return pickedTeam === g.homeTeam ? (cover > 0 ? 'WIN' : 'LOSS') : (cover < 0 ? 'WIN' : 'LOSS');
+}
+
+function render(allPicks, weeks, espnByWeek) {
+  // Aggregate per user, per week
+  const users = {};
+  allPicks.forEach(p => {
+    const wk = `${p.year}_${p.week}`;
+    const games = espnByWeek[wk] || [];
+    const g = games.find(g => String(g.id) === String(p.gameId));
+    const res = computeResult(p.pickedTeam, g);
+    const pts = res==='WIN' ? parseInt(p.confidence) : res==='LOSS' ? -parseInt(p.confidence) : 0;
+
+    if (!users[p.username]) users[p.username] = { totalPts:0, wins:0, losses:0, pushes:0, weeks:{} };
+    if (!users[p.username].weeks[wk]) users[p.username].weeks[wk] = { pts:0, wins:0, losses:0 };
+
+    if (res === 'WIN') { users[p.username].wins++; users[p.username].losses += 0; users[p.username].totalPts += pts; users[p.username].weeks[wk].pts += pts; users[p.username].weeks[wk].wins++; }
+    else if (res === 'LOSS') { users[p.username].losses++; users[p.username].totalPts += pts; users[p.username].weeks[wk].pts += pts; users[p.username].weeks[wk].losses++; }
+    else if (res === 'PUSH') { users[p.username].pushes++; }
+  });
+
+  const sorted = Object.entries(users).sort(([,a],[,b]) => b.totalPts - a.totalPts);
+  const maxPts = Math.max(...sorted.map(([,u]) => Math.abs(u.totalPts)), 1);
+  const currentYear = allPicks[allPicks.length-1]?.year || 2026;
+
+  const rankIcon = i => i===0?'🏆':i===1?'🥈':i===2?'🥉':`${i+1}`;
+  const rankCls = i => i===0?'gold':i===1?'silver':i===2?'bronze':'';
+  const ptsCls = v => v>0?'pos':v<0?'neg':'zero';
+
+  let html = `<div class="season-header">
+    <div><div class="season-title">Season Standings</div><div class="season-sub">${currentYear} College Football Season</div></div>
+  </div>
+  <div class="leaderboard">
+    <table class="lb-table">
+      <thead><tr><th></th><th>Player</th><th class="right">W-L</th><th class="right">Win %</th><th class="right">Total Pts</th><th class="right bar-col">Bar</th></tr></thead>
+      <tbody>`;
+
+  sorted.forEach(([name,u], i) => {
+    const total = u.wins + u.losses;
+    const pct = total ? Math.round((u.wins/total)*100) : 0;
+    const barW = maxPts > 0 ? Math.round((Math.abs(u.totalPts)/maxPts)*100) : 0;
+    html += `<tr>
+      <td class="rank-col ${rankCls(i)}">${rankIcon(i)}</td>
+      <td class="name-col">${name}</td>
+      <td class="record-col">${u.wins}-${u.losses}${u.pushes?`-${u.pushes}`:''}</td>
+      <td class="pct-col">${total?pct+'%':'—'}</td>
+      <td class="pts-col ${ptsCls(u.totalPts)}">${u.totalPts>0?'+':''}${u.totalPts}</td>
+      <td class="bar-col"><div class="pts-bar-wrap"><div class="pts-bar${u.totalPts<0?' neg':''}" style="width:${barW}%"></div></div></td>
+    </tr>`;
+  });
+  html += `</tbody></table></div>`;
+
+  // Weekly breakdown
+  const weekNums = weeks.map(w => { const [y,wk]=w.split('_'); return { key:w, label:`Wk ${wk}` }; });
+  html += `<div class="weekly-section">
+    <div class="weekly-title">Week-by-Week Breakdown</div>
+    <div class="weekly-table-wrap">
+      <table class="weekly-table">
+        <thead><tr><th>Player</th>${weekNums.map(w=>`<th>${w.label}</th>`).join('')}<th>Total</th></tr></thead>
+        <tbody>`;
+
+  sorted.forEach(([name,u]) => {
+    html += `<tr><td>${name}</td>`;
+    weekNums.forEach(w => {
+      const wkData = u.weeks[w.key];
+      if (!wkData) { html += `<td class="wk-na">—</td>`; return; }
+      const cls = wkData.pts>0?'wk-pos':wkData.pts<0?'wk-neg':'wk-zero';
+      html += `<td class="${cls}">${wkData.pts>0?'+':''}${wkData.pts}</td>`;
+    });
+    const totalCls = u.totalPts>0?'wk-pos':u.totalPts<0?'wk-neg':'wk-zero';
+    html += `<td class="${totalCls}" style="font-weight:800">${u.totalPts>0?'+':''}${u.totalPts}</td></tr>`;
+  });
+
+  html += `</tbody></table></div></div>`;
+  document.getElementById('content').innerHTML = html;
+}
+
+document.getElementById('hamburger').addEventListener('click', function(e) { e.stopPropagation(); document.getElementById('navDropdown').classList.toggle('open'); });
+document.addEventListener('click', () => document.getElementById('navDropdown').classList.remove('open'));
+</script>
+</body>
+</html>

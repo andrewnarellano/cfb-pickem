@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <title>CFB Pick'em — Scoreboard</title>
+  <style>
+    :root {
+      --bg: #0d1117; --surface: #161b22; --card: #1c2333;
+      --border: rgba(255,255,255,0.08);
+      --orange: #f97316; --orange-dim: rgba(249,115,22,0.12);
+      --green: #22c55e; --green-dim: rgba(34,197,94,0.12);
+      --red: #ef4444;
+      --text: #e6edf3; --muted: rgba(230,237,243,0.5); --faint: rgba(230,237,243,0.2);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { background: var(--bg); -webkit-text-size-adjust: 100%; }
+    body { background: var(--bg); min-height: 100vh; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: var(--text); padding-left: env(safe-area-inset-left); padding-right: env(safe-area-inset-right); }
+
+    header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 10; }
+    .header-left h1 { font-size: 1.1rem; font-weight: 800; }
+    .header-left .subtitle { font-size: 0.72rem; color: var(--orange); margin-top: 2px; font-weight: 600; }
+    .nav-buttons { display: flex; gap: 8px; }
+    .nav-btn { background: transparent; color: var(--muted); border: 1px solid var(--border); padding: 7px 14px; border-radius: 6px; font-weight: 700; font-size: 0.8rem; cursor: pointer; text-decoration: none; display: inline-block; transition: all 0.15s; white-space: nowrap; }
+    .nav-btn:hover { color: var(--text); border-color: rgba(255,255,255,0.2); }
+    .nav-btn.active { background: var(--orange); color: #fff; border-color: var(--orange); }
+    .hamburger { display: none; position: relative; font-size: 1.4rem; cursor: pointer; background: none; border: none; color: var(--orange); padding: 4px 8px; border-radius: 4px; line-height: 1; }
+    .nav-dropdown { display: none; position: absolute; top: calc(100% + 10px); right: 0; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 8px 24px rgba(0,0,0,0.55); min-width: 170px; z-index: 100; overflow: hidden; }
+    .nav-dropdown a { display: block; padding: 12px 16px; color: var(--text); text-decoration: none; font-weight: 600; font-size: 0.88rem; border-bottom: 1px solid var(--border); transition: background 0.12s; }
+    .nav-dropdown a:last-child { border-bottom: none; }
+    .nav-dropdown a:hover { background: rgba(255,255,255,0.06); }
+    .nav-dropdown a.active { color: var(--orange); }
+    .nav-dropdown.open { display: block; }
+    @media (max-width: 700px) { .nav-buttons { display: none; } .hamburger { display: block; } header { padding: 12px 16px; } }
+
+    .week-bar { background: var(--surface); border-bottom: 1px solid var(--border); padding: 10px 24px; display: flex; align-items: center; gap: 12px; }
+    .week-label { font-size: 0.78rem; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--orange); flex: 1; text-align: center; }
+    .week-nav-btn { background: transparent; border: 1px solid var(--border); color: var(--muted); border-radius: 5px; padding: 5px 12px; font-size: 0.75rem; font-weight: 700; cursor: pointer; transition: all 0.15s; font-family: inherit; }
+    .week-nav-btn:hover:not([disabled]) { color: var(--text); border-color: rgba(255,255,255,0.2); }
+    .week-nav-btn:disabled { opacity: 0.3; cursor: default; }
+
+    .refresh-bar { padding: 8px 24px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; font-size: 0.65rem; color: var(--muted); }
+    .refresh-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--green); margin-right: 6px; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+    .content { padding: 20px 20px 40px; max-width: 820px; margin: 0 auto; }
+    .loading { text-align: center; padding: 60px 20px; color: var(--muted); font-size: 0.9rem; }
+
+    /* Week summary leaderboard */
+    .week-board { background: var(--card); border-radius: 10px; border: 1px solid var(--border); margin-bottom: 24px; overflow: hidden; }
+    .section-header { background: rgba(0,0,0,0.25); padding: 10px 16px; border-bottom: 1px solid var(--border); font-size: 0.65rem; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--orange); }
+    .board-table { width: 100%; border-collapse: collapse; }
+    .board-table th { padding: 8px 16px; text-align: left; font-size: 0.6rem; font-weight: 800; letter-spacing: 0.7px; color: var(--muted); text-transform: uppercase; border-bottom: 1px solid var(--border); }
+    .board-table th.right { text-align: right; }
+    .board-table td { padding: 11px 16px; border-bottom: 1px solid rgba(255,255,255,0.04); }
+    .board-table tbody tr:last-child td { border-bottom: none; }
+    .rank { font-size: 0.78rem; font-weight: 800; color: var(--muted); width: 32px; }
+    .rank.top { color: var(--orange); }
+    .player-name { font-size: 0.9rem; font-weight: 700; }
+    .pts-cell { text-align: right; font-size: 1rem; font-weight: 800; }
+    .pts-cell.pos { color: var(--green); }
+    .pts-cell.neg { color: var(--red); }
+    .pts-cell.zero { color: var(--muted); }
+    .record-cell { text-align: right; font-size: 0.75rem; color: var(--muted); }
+    .pending-cell { text-align: right; font-size: 0.72rem; color: var(--faint); font-style: italic; }
+
+    /* Game rows */
+    .games-section { margin-bottom: 24px; }
+    .game-row { background: var(--card); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 10px; overflow: hidden; }
+    .game-row-header { background: rgba(0,0,0,0.2); padding: 8px 14px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); }
+    .game-matchup { font-size: 0.82rem; font-weight: 700; }
+    .game-score { font-size: 0.82rem; font-weight: 800; color: var(--green); }
+    .game-score.live { color: var(--orange); }
+    .game-score.upcoming { color: var(--muted); font-weight: 600; }
+    .game-spread-badge { font-size: 0.62rem; color: var(--faint); margin-left: 8px; }
+    .picks-list { display: flex; flex-wrap: wrap; gap: 6px; padding: 10px 14px; }
+    .pick-chip { display: flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.04); border: 1px solid var(--border); border-radius: 6px; padding: 6px 10px; font-size: 0.75rem; }
+    .pick-chip.win { border-color: rgba(34,197,94,0.3); background: var(--green-dim); }
+    .pick-chip.loss { border-color: rgba(239,68,68,0.3); background: rgba(239,68,68,0.08); }
+    .pick-chip-name { font-weight: 700; }
+    .pick-chip-team { color: var(--muted); font-size: 0.7rem; }
+    .pick-chip-pts { font-weight: 800; }
+    .pick-chip.win .pick-chip-pts { color: var(--green); }
+    .pick-chip.loss .pick-chip-pts { color: var(--red); }
+
+    @media (max-width: 500px) {
+      .content { padding: 14px 12px 40px; }
+      .week-bar, .refresh-bar { padding: 10px 14px; }
+      .player-name { font-size: 0.82rem; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <h1>CFB Pick'em</h1>
+    <div class="subtitle">Against the Spread · 2026 Season</div>
+  </div>
+  <div class="nav-buttons">
+    <a href="picks.html" class="nav-btn">Picks</a>
+    <a href="scoreboard.html" class="nav-btn active">Scoreboard</a>
+    <a href="standings.html" class="nav-btn">Standings</a>
+  </div>
+  <button class="hamburger" id="hamburger" aria-label="Menu">&#9776;
+    <div class="nav-dropdown" id="navDropdown">
+      <a href="picks.html">Picks</a>
+      <a href="scoreboard.html" class="active">Scoreboard</a>
+      <a href="standings.html">Standings</a>
+    </div>
+  </button>
+</header>
+
+<div class="week-bar">
+  <button class="week-nav-btn" id="prevWeekBtn" disabled>&#8592; Prev</button>
+  <span class="week-label" id="weekLabel">Loading...</span>
+  <button class="week-nav-btn" id="nextWeekBtn" disabled>Next &#8594;</button>
+</div>
+
+<div class="refresh-bar">
+  <span><span class="refresh-dot"></span>Live scoring · updates every 60s</span>
+  <span id="lastUpdated">—</span>
+</div>
+
+<div class="content" id="content">
+  <div class="loading">Loading scoreboard...</div>
+</div>
+
+<script>
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbxof2sk_1jM7YJLGbUALWdrcuROeP3YnxKA60WxU_QtTib9D_QMB9qiWYsfY0Mns26VYg/exec';
+const ESPN = 'http://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard';
+
+let currentWeek = 1, currentYear = 2026;
+let refreshTimer = null;
+
+loadWeek(null, null);
+
+async function loadWeek(week, year) {
+  document.getElementById('content').innerHTML = '<div class="loading">Loading...</div>';
+  const params = week ? `?week=${week}&season=${year}&seasontype=2` : '';
+  try {
+    const [espnData, sheetPicks] = await Promise.all([
+      fetch(ESPN + params).then(r => r.json()),
+      fetchPicks(week || null, year || null),
+    ]);
+    currentWeek = espnData.week?.number || 1;
+    currentYear = espnData.season?.year || 2026;
+    document.getElementById('weekLabel').textContent = `WEEK ${currentWeek} · ${currentYear} SEASON`;
+    document.getElementById('prevWeekBtn').disabled = currentWeek <= 1;
+    document.getElementById('nextWeekBtn').disabled = false;
+    render(espnData, sheetPicks);
+    document.getElementById('lastUpdated').textContent = 'Updated ' + new Date().toLocaleTimeString();
+    scheduleRefresh();
+  } catch(e) {
+    document.getElementById('content').innerHTML = '<div class="loading">Failed to load. Check your connection.</div>';
+  }
+}
+
+async function fetchPicks(week, year) {
+  const w = week || currentWeek, y = year || currentYear;
+  try {
+    const res = await fetch(`${GAS_URL}?action=getPicks&week=${w}&year=${y}`);
+    return await res.json();
+  } catch(e) { return []; }
+}
+
+function parseGames(events) {
+  return events.map(ev => {
+    const comp = ev.competitions[0];
+    const home = comp.competitors.find(c => c.homeAway === 'home');
+    const away = comp.competitors.find(c => c.homeAway === 'away');
+    const odds = comp.odds?.[0];
+    const st = comp.status?.type;
+    return {
+      id: ev.id,
+      homeTeam: home.team.displayName, homeAbbr: home.team.abbreviation, homeScore: parseInt(home.score)||0,
+      awayTeam: away.team.displayName, awayAbbr: away.team.abbreviation, awayScore: parseInt(away.score)||0,
+      spreadDetail: odds?.details || null, spread: odds?.spread ?? null,
+      state: st?.state || 'pre', completed: st?.completed || false,
+      statusShort: st?.shortDetail || '',
+    };
+  }).filter(g => g.spreadDetail);
+}
+
+function computeResult(pickedTeam, g) {
+  if (!g.completed && g.state !== 'in') return null;
+  if (g.spread === null) return null;
+  const cover = (g.homeScore - g.awayScore) + g.spread;
+  if (Math.abs(cover) < 0.01) return 'PUSH';
+  return pickedTeam === g.homeTeam ? (cover > 0 ? 'WIN' : 'LOSS') : (cover < 0 ? 'WIN' : 'LOSS');
+}
+
+function render(espnData, sheetPicks) {
+  const games = parseGames(espnData.events || []);
+  const content = document.getElementById('content');
+
+  if (!sheetPicks.length) {
+    content.innerHTML = '<div class="loading">No picks submitted yet for this week.</div>';
+    return;
+  }
+
+  // Build per-user weekly totals
+  const users = {};
+  sheetPicks.forEach(p => {
+    if (!users[p.username]) users[p.username] = { picks:[], pts:0, wins:0, losses:0, pending:0 };
+    const g = games.find(g => String(g.id) === String(p.gameId));
+    const res = g ? computeResult(p.pickedTeam, g) : null;
+    const pts = res === 'WIN' ? parseInt(p.confidence) : res === 'LOSS' ? -parseInt(p.confidence) : 0;
+    users[p.username].picks.push({ ...p, game: g, result: res, pts });
+    if (res === 'WIN') { users[p.username].pts += pts; users[p.username].wins++; }
+    else if (res === 'LOSS') { users[p.username].pts += pts; users[p.username].losses++; }
+    else if (res === 'PUSH') {}
+    else { users[p.username].pending++; }
+  });
+
+  const sorted = Object.entries(users).sort(([,a],[,b]) => b.pts - a.pts);
+
+  let html = `<div class="week-board">
+    <div class="section-header">Week ${currentWeek} Standings</div>
+    <table class="board-table">
+      <thead><tr><th></th><th>Player</th><th class="right">W-L</th><th class="right">Week Pts</th><th class="right">Pending</th></tr></thead>
+      <tbody>`;
+
+  sorted.forEach(([name, u], i) => {
+    const ptsCls = u.pts > 0 ? 'pos' : u.pts < 0 ? 'neg' : 'zero';
+    html += `<tr>
+      <td class="rank${i<3?' top':''}">${i===0?'🏆':i===1?'2':i===2?'3':i+1}</td>
+      <td class="player-name">${name}</td>
+      <td class="record-cell">${u.wins}-${u.losses}</td>
+      <td class="pts-cell ${ptsCls}">${u.pts > 0 ? '+':''}${u.pts}</td>
+      <td class="pending-cell">${u.pending > 0 ? u.pending + ' left' : '—'}</td>
+    </tr>`;
+  });
+  html += `</tbody></table></div>`;
+
+  // Game-by-game breakdown
+  html += `<div class="games-section"><div style="font-size:0.65rem;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--orange);margin-bottom:12px;">Game-by-Game Picks</div>`;
+
+  games.forEach(g => {
+    const gamePicks = sheetPicks.filter(p => String(p.gameId) === String(g.id));
+    if (!gamePicks.length) return;
+
+    const scoreStr = g.completed ? `${g.awayAbbr} ${g.awayScore} – ${g.homeAbbr} ${g.homeScore}` :
+                     g.state === 'in' ? `${g.awayAbbr} ${g.awayScore} – ${g.homeAbbr} ${g.homeScore}` :
+                     g.statusShort;
+    const scoreClass = g.completed ? '' : g.state === 'in' ? 'live' : 'upcoming';
+
+    html += `<div class="game-row">
+      <div class="game-row-header">
+        <span class="game-matchup">${g.awayAbbr} @ ${g.homeAbbr}<span class="game-spread-badge">${g.spreadDetail}</span></span>
+        <span class="game-score ${scoreClass}">${scoreStr}</span>
+      </div>
+      <div class="picks-list">`;
+
+    gamePicks.forEach(p => {
+      const res = computeResult(p.pickedTeam, g);
+      const pts = res==='WIN'?`+${p.confidence}`:res==='LOSS'?`-${p.confidence}`:res==='PUSH'?'PUSH':g.state==='in'?'…':'—';
+      const chipClass = res==='WIN'?'win':res==='LOSS'?'loss':'';
+      const abbr = g.awayTeam===p.pickedTeam ? g.awayAbbr : g.homeAbbr;
+      html += `<div class="pick-chip ${chipClass}">
+        <span class="pick-chip-name">${p.username}</span>
+        <span class="pick-chip-team">${abbr} (${p.confidence})</span>
+        <span class="pick-chip-pts">${pts}</span>
+      </div>`;
+    });
+
+    html += `</div></div>`;
+  });
+
+  html += '</div>';
+  content.innerHTML = html;
+}
+
+function scheduleRefresh() {
+  if (refreshTimer) clearTimeout(refreshTimer);
+  refreshTimer = setTimeout(async () => {
+    const [espnData, sheetPicks] = await Promise.all([
+      fetch(ESPN + `?week=${currentWeek}&season=${currentYear}&seasontype=2`).then(r => r.json()).catch(()=>({events:[]})),
+      fetchPicks(currentWeek, currentYear),
+    ]);
+    render(espnData, sheetPicks);
+    document.getElementById('lastUpdated').textContent = 'Updated ' + new Date().toLocaleTimeString();
+    scheduleRefresh();
+  }, 60_000);
+}
+
+document.getElementById('prevWeekBtn').addEventListener('click', () => { if(refreshTimer) clearTimeout(refreshTimer); loadWeek(currentWeek-1, currentYear); });
+document.getElementById('nextWeekBtn').addEventListener('click', () => { if(refreshTimer) clearTimeout(refreshTimer); loadWeek(currentWeek+1, currentYear); });
+
+document.getElementById('hamburger').addEventListener('click', function(e) { e.stopPropagation(); document.getElementById('navDropdown').classList.toggle('open'); });
+document.addEventListener('click', () => document.getElementById('navDropdown').classList.remove('open'));
+</script>
+</body>
+</html>

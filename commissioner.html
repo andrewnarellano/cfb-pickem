@@ -67,10 +67,10 @@
     .week-nav-btn:disabled { opacity: 0.3; cursor: default; }
 
     /* ── Two-column layout ── */
-    .commissioner-layout { display: grid; grid-template-columns: 340px 1fr; align-items: start; }
+    .commissioner-layout { display: grid; grid-template-columns: 460px 1fr; align-items: start; }
 
     /* ── Left: game column ── */
-    .game-column { position: sticky; top: 107px; height: calc(100vh - 107px); overflow-y: auto; border-right: 1px solid var(--border); }
+    .game-column { position: sticky; top: 107px; height: calc(100vh - 107px); overflow-y: auto; border-right: 1px solid var(--border); min-width: 0; }
     .game-col-header { position: sticky; top: 0; background: var(--surface); border-bottom: 1px solid var(--border); padding: 10px 14px; display: flex; align-items: center; justify-content: space-between; z-index: 5; }
     .game-col-title { font-size: 0.68rem; font-weight: 800; letter-spacing: 0.8px; text-transform: uppercase; color: var(--yellow); font-family: 'Sofia Sans Extra Condensed', sans-serif; }
     .game-col-meta { font-size: 0.62rem; color: var(--muted); }

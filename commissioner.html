@@ -295,7 +295,7 @@ const GAS_URL = 'https://script.google.com/macros/s/AKfycbxof2sk_1jM7YJLGbUALWdr
 const ESPN    = 'https://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard';
 
 let password = '';
-let currentWeek = 1, currentYear = 2026;
+let currentWeek = null, currentYear = 2026;
 let espnGames = [];
 let selectedGames = {}; // gameId → { game, pickType, total }
 let bonusQuestions = [];
@@ -363,12 +363,14 @@ async function loadWeek(week, year) {
 async function loadEspn() {
   document.getElementById('espnList').innerHTML = '<div class="loading">Loading ESPN games...</div>';
   try {
-    const params = `?week=${currentWeek}&season=${currentYear}&seasontype=2&limit=100`;
+    const params = currentWeek
+      ? `?week=${currentWeek}&season=${currentYear}&seasontype=2&limit=100`
+      : `?seasontype=2&limit=100`;
     const data = await fetch(ESPN + params).then(r => r.json());
     currentWeek = data.week?.number || currentWeek;
     currentYear = data.season?.year || currentYear;
     document.getElementById('weekLabel').textContent = `WEEK ${currentWeek} · ${currentYear} SEASON`;
-    document.getElementById('prevWeekBtn').disabled = currentWeek <= 1;
+    document.getElementById('prevWeekBtn').disabled = !currentWeek || currentWeek <= 1;
     espnGames = parseEspnGames(data.events || []);
     document.getElementById('gameColCount').textContent = `${espnGames.length} games`;
     renderEspnList();

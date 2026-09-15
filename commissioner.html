@@ -271,7 +271,7 @@
         </div>
         <div class="section-body">
           <p style="font-size:0.75rem;color:var(--muted);margin-bottom:12px">Saving overwrites the existing config for this week. Submitted player picks are not affected.</p>
-          <button class="btn btn-primary" id="saveConfigBtn" onclick="saveConfig()">Save Week Config</button>
+          <button class="btn btn-primary" id="saveConfigBtn" onclick="saveConfig()">Complete</button>
           <div class="status-msg" id="saveConfigMsg"></div>
         </div>
       </div>
@@ -297,7 +297,7 @@
   <div style="display:flex;align-items:center;gap:10px">
     <span id="saveProgressMsg" style="font-size:0.68rem;color:var(--muted);display:none"></span>
     <button class="btn btn-secondary" onclick="saveProgress()">Save Progress</button>
-    <button class="btn btn-primary" onclick="saveConfig()">Save Config</button>
+    <button class="btn btn-primary" onclick="saveConfig()">Complete</button>
   </div>
 </div>
 
@@ -632,7 +632,7 @@ async function saveConfig() {
     msg.textContent = e.message || 'Save failed.';
     msg.className = 'status-msg error';
   } finally {
-    btn.disabled = false; btn.textContent = 'Save Week Config';
+    btn.disabled = false; btn.textContent = 'Complete';
   }
 }
 

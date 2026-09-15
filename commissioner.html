@@ -13,14 +13,14 @@
       --yellow: #FCE300;
       --green: #22c55e; --green-dim: rgba(34,197,94,0.12);
       --red: #ef4444;
-      --teal-dim: rgba(6,95,70,0.3);
       --text: #ffffff; --muted: rgba(214,211,196,0.75); --faint: rgba(214,211,196,0.3);
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html { background: var(--bg); }
-    body { background: var(--bg); min-height: 100vh; font-family: 'Montserrat', sans-serif; color: var(--text); padding-left: env(safe-area-inset-left); padding-right: env(safe-area-inset-right); }
+    body { background: var(--bg); min-height: 100vh; font-family: 'Montserrat', sans-serif; color: var(--text); }
 
-    header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 10; }
+    /* ── Header ── */
+    header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 30; }
     .header-left h1 { font-size: 1.1rem; font-weight: 800; font-family: 'Sofia Sans Extra Condensed', sans-serif; letter-spacing: 0.5px; }
     .header-left .subtitle { font-size: 0.72rem; color: var(--yellow); margin-top: 2px; font-weight: 600; }
     .nav-buttons { display: flex; gap: 8px; }
@@ -34,30 +34,22 @@
     .nav-dropdown a:hover { background: rgba(255,255,255,0.06); }
     .nav-dropdown a.active { color: var(--maroon); }
     .nav-dropdown.open { display: block; }
-    @media (max-width: 700px) { .nav-buttons { display: none; } .hamburger { display: block; } header { padding: 12px 16px; } }
+    @media (max-width: 900px) { .nav-buttons { display: none; } .hamburger { display: block; } header { padding: 12px 16px; } }
 
-    .content { padding: 28px 20px 80px; max-width: 820px; margin: 0 auto; }
-    .loading { text-align: center; padding: 60px 20px; color: var(--muted); font-size: 0.9rem; }
-
-    /* Auth gate */
-    .auth-gate { display: flex; align-items: center; justify-content: center; min-height: 60vh; }
+    /* ── Auth gate ── */
+    .auth-gate { display: flex; align-items: center; justify-content: center; min-height: 80vh; }
     .auth-box { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 36px 28px; width: 340px; }
     .auth-box h2 { font-size: 1.1rem; font-weight: 800; margin-bottom: 6px; font-family: 'Montserrat', sans-serif; }
     .auth-box p { font-size: 0.75rem; color: var(--muted); margin-bottom: 24px; }
     .auth-box .btn { font-family: 'Montserrat', sans-serif; }
-
-    label { display: block; font-size: 0.62rem; font-weight: 800; letter-spacing: 0.6px; color: var(--muted); margin-bottom: 6px; text-transform: uppercase; }
-    input[type=text], input[type=password], input[type=number] {
-      width: 100%; padding: 10px 11px; border-radius: 6px;
-      background: rgba(255,255,255,0.07); border: 1px solid var(--border);
-      color: var(--text); font-size: 0.92rem; font-weight: 600;
-      outline: none; font-family: inherit; transition: border-color 0.15s;
-    }
-    input:focus { border-color: var(--maroon); }
     .auth-err { font-size: 0.72rem; color: var(--red); margin-top: 10px; display: none; }
 
+    /* ── Shared inputs & buttons ── */
+    label { display: block; font-size: 0.62rem; font-weight: 800; letter-spacing: 0.6px; color: var(--muted); margin-bottom: 6px; text-transform: uppercase; }
+    input[type=text], input[type=password], input[type=number] { width: 100%; padding: 10px 11px; border-radius: 6px; background: rgba(255,255,255,0.07); border: 1px solid var(--border); color: var(--text); font-size: 0.92rem; font-weight: 600; outline: none; font-family: inherit; transition: border-color 0.15s; }
+    input:focus { border-color: var(--maroon); }
     .btn { padding: 10px 20px; border-radius: 7px; font-weight: 700; font-size: 0.85rem; cursor: pointer; border: none; font-family: inherit; transition: all 0.15s; }
-    .btn-primary { background: var(--maroon); color: #fff; font-family: 'Spectral', serif; }
+    .btn-primary { background: var(--maroon); color: #fff; }
     .btn-primary:hover { background: #6b0000; }
     .btn-primary:disabled { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.3); cursor: not-allowed; }
     .btn-secondary { background: rgba(255,255,255,0.07); color: var(--text); border: 1px solid var(--border); }
@@ -67,78 +59,96 @@
     .btn-sm { padding: 6px 12px; font-size: 0.75rem; }
     .btn-xs { padding: 4px 8px; font-size: 0.68rem; }
 
-    /* Week bar */
-    .week-bar { background: var(--surface); border-bottom: 1px solid var(--border); padding: 10px 24px; display: flex; align-items: center; gap: 12px; }
+    /* ── Week bar ── */
+    .week-bar { background: var(--surface); border-bottom: 1px solid var(--border); padding: 10px 24px; display: flex; align-items: center; gap: 12px; position: sticky; top: 65px; z-index: 20; }
     .week-label { font-size: 0.78rem; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--yellow); flex: 1; text-align: center; font-family: 'Sofia Sans Extra Condensed', sans-serif; }
     .week-nav-btn { background: transparent; border: 1px solid var(--border); color: var(--muted); border-radius: 5px; padding: 5px 12px; font-size: 0.75rem; font-weight: 700; cursor: pointer; transition: all 0.15s; font-family: inherit; }
     .week-nav-btn:hover:not(:disabled) { color: var(--text); border-color: rgba(255,255,255,0.2); }
     .week-nav-btn:disabled { opacity: 0.3; cursor: default; }
 
-    /* Section cards */
-    .section { background: var(--card); border: 1px solid var(--border); border-radius: 10px; margin-bottom: 24px; overflow: hidden; }
-    .section-header { background: rgba(0,0,0,0.25); padding: 12px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
-    .section-title { font-size: 0.72rem; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--yellow); font-family: 'Sofia Sans Extra Condensed', sans-serif; }
-    .section-body { padding: 16px; }
+    /* ── Two-column layout ── */
+    .commissioner-layout { display: grid; grid-template-columns: 340px 1fr; align-items: start; }
 
-    /* ESPN game list */
-    .espn-game { display: flex; align-items: flex-start; gap: 12px; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
-    .espn-game:last-child { border-bottom: none; }
-    .espn-game-check { width: 18px; height: 18px; accent-color: var(--maroon); cursor: pointer; flex-shrink: 0; margin-top: 3px; }
-    .espn-game-info { flex: 1; min-width: 0; }
-    .espn-game-matchup { font-size: 0.88rem; font-weight: 700; }
-    .espn-game-time { font-size: 0.68rem; color: var(--muted); margin-top: 2px; }
-    .espn-game-lines { display: flex; gap: 8px; margin-top: 6px; flex-wrap: wrap; align-items: center; }
-    .line-tag { font-size: 0.7rem; font-weight: 700; padding: 2px 9px; border-radius: 4px; }
+    /* ── Left: game column ── */
+    .game-column { position: sticky; top: 107px; height: calc(100vh - 107px); overflow-y: auto; border-right: 1px solid var(--border); }
+    .game-col-header { position: sticky; top: 0; background: var(--surface); border-bottom: 1px solid var(--border); padding: 10px 14px; display: flex; align-items: center; justify-content: space-between; z-index: 5; }
+    .game-col-title { font-size: 0.68rem; font-weight: 800; letter-spacing: 0.8px; text-transform: uppercase; color: var(--yellow); font-family: 'Sofia Sans Extra Condensed', sans-serif; }
+    .game-col-meta { font-size: 0.62rem; color: var(--muted); }
+
+    .game-row { padding: 10px 14px; border-bottom: 1px solid rgba(255,255,255,0.04); display: flex; align-items: flex-start; gap: 10px; transition: background 0.1s; }
+    .game-row:last-child { border-bottom: none; }
+    .game-row.assigned { background: rgba(80,0,0,0.1); }
+    .game-row-info { flex: 1; min-width: 0; }
+    .game-row-matchup { font-size: 0.78rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .game-row-time { font-size: 0.6rem; color: var(--muted); margin-top: 2px; }
+    .game-row-lines { display: flex; gap: 5px; margin-top: 5px; flex-wrap: wrap; }
+    .line-tag { font-size: 0.6rem; font-weight: 700; padding: 1px 6px; border-radius: 3px; }
     .line-spread { background: var(--maroon-dim); color: var(--yellow); }
-    .line-ou { background: var(--teal-dim); color: #6ee7b7; }
-    .line-none { font-size: 0.68rem; color: var(--faint); font-style: italic; }
-    .espn-game-type { display: flex; gap: 6px; flex-shrink: 0; margin-top: 2px; }
-    .type-btn { padding: 4px 10px; border-radius: 5px; font-size: 0.68rem; font-weight: 700; cursor: pointer; border: 1.5px solid var(--border); background: transparent; color: var(--muted); font-family: inherit; transition: all 0.12s; }
-    .type-btn.active { color: #fff; border-color: transparent; }
-    .type-btn.su.active  { background: #1e40af; }
-    .type-btn.ats.active { background: var(--maroon); }
-    .type-btn.ou.active  { background: #065f46; }
-    .ou-total-wrap { display: none; align-items: center; gap: 6px; margin-top: 6px; }
-    .ou-total-wrap.visible { display: flex; }
-    .ou-total-wrap label { margin: 0; white-space: nowrap; }
-    .ou-total-wrap input { width: 80px; padding: 5px 8px; font-size: 0.8rem; }
+    .line-ou { background: rgba(6,95,70,0.3); color: #6ee7b7; }
 
-    /* Selected games list */
-    .selected-list { display: flex; flex-direction: column; gap: 8px; }
-    .selected-item { background: rgba(255,255,255,0.04); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; display: flex; align-items: center; gap: 10px; }
-    .selected-item-info { flex: 1; }
-    .selected-item-matchup { font-size: 0.85rem; font-weight: 700; }
-    .selected-item-meta { font-size: 0.65rem; color: var(--muted); margin-top: 2px; }
-    .type-badge { font-size: 0.62rem; font-weight: 800; letter-spacing: 0.5px; padding: 3px 8px; border-radius: 4px; }
-    .type-badge.su  { background: rgba(30,64,175,0.3); color: #93c5fd; }
-    .type-badge.ats { background: var(--maroon-dim); color: var(--yellow); }
-    .type-badge.ou  { background: rgba(6,95,70,0.3); color: #6ee7b7; }
+    .game-row-btns { display: flex; gap: 3px; flex-shrink: 0; padding-top: 1px; }
+    .assign-btn { padding: 3px 7px; border-radius: 4px; font-size: 0.6rem; font-weight: 800; cursor: pointer; border: 1.5px solid; background: transparent; font-family: inherit; transition: all 0.12s; letter-spacing: 0.3px; }
+    .assign-btn.su  { border-color: rgba(30,64,175,0.45); color: #93c5fd; }
+    .assign-btn.ats { border-color: rgba(80,0,0,0.6); color: var(--yellow); }
+    .assign-btn.ou  { border-color: rgba(6,95,70,0.5); color: #6ee7b7; }
+    .assign-btn.su.active  { background: #1e40af; border-color: #1e40af; color: #fff; }
+    .assign-btn.ats.active { background: var(--maroon); border-color: var(--maroon); color: #fff; }
+    .assign-btn.ou.active  { background: #065f46; border-color: #065f46; color: #fff; }
 
-    /* Bonus questions */
-    .bonus-list { display: flex; flex-direction: column; gap: 12px; }
-    .bonus-item { background: rgba(255,255,255,0.04); border: 1px solid var(--border); border-radius: 8px; padding: 14px; }
-    .bonus-row { display: flex; gap: 8px; margin-bottom: 8px; }
+    /* ── Right: config column ── */
+    .config-column { padding: 20px; padding-bottom: 80px; display: flex; flex-direction: column; gap: 16px; }
+
+    .section { background: var(--card); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+    .section-header { background: rgba(0,0,0,0.3); padding: 10px 14px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+    .section-title { font-size: 0.7rem; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--yellow); font-family: 'Sofia Sans Extra Condensed', sans-serif; }
+    .section-count { font-size: 0.62rem; color: var(--muted); }
+    .section-body { padding: 12px 14px; }
+
+    .section-game-list { display: flex; flex-direction: column; gap: 6px; }
+    .section-game-item { display: flex; align-items: center; gap: 10px; padding: 8px 10px; background: rgba(255,255,255,0.04); border-radius: 6px; border: 1px solid var(--border); }
+    .section-game-item-info { flex: 1; min-width: 0; }
+    .section-game-item-matchup { font-size: 0.82rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .section-game-item-meta { font-size: 0.62rem; color: var(--muted); margin-top: 2px; }
+    .total-input { width: 68px; padding: 4px 7px; border-radius: 5px; background: rgba(255,255,255,0.07); border: 1px solid var(--border); color: var(--text); font-size: 0.8rem; font-weight: 600; outline: none; font-family: inherit; flex-shrink: 0; }
+    .total-input:focus { border-color: #065f46; }
+    .remove-btn { background: none; border: none; color: var(--faint); cursor: pointer; font-size: 1.1rem; line-height: 1; padding: 2px 4px; transition: color 0.12s; flex-shrink: 0; }
+    .remove-btn:hover { color: var(--red); }
+
+    .empty-state { text-align: center; padding: 18px 12px; color: var(--faint); font-size: 0.72rem; }
+
+    /* ── Bonus ── */
+    .bonus-list { display: flex; flex-direction: column; gap: 10px; }
+    .bonus-item { background: rgba(255,255,255,0.04); border: 1px solid var(--border); border-radius: 7px; padding: 12px; }
+    .bonus-row { display: flex; gap: 8px; margin-bottom: 7px; }
     .bonus-row:last-child { margin-bottom: 0; }
-    .bonus-row label { min-width: 70px; padding-top: 10px; }
-    .bonus-add-btn { display: flex; align-items: center; gap: 6px; font-size: 0.75rem; color: var(--muted); background: none; border: 1px dashed var(--border); border-radius: 7px; padding: 10px 14px; cursor: pointer; width: 100%; font-family: inherit; font-weight: 600; transition: all 0.15s; margin-top: 4px; }
+    .bonus-row label { min-width: 65px; padding-top: 10px; }
+    .bonus-add-btn { display: flex; align-items: center; gap: 6px; font-size: 0.72rem; color: var(--muted); background: none; border: 1px dashed var(--border); border-radius: 6px; padding: 9px 12px; cursor: pointer; width: 100%; font-family: inherit; font-weight: 600; transition: all 0.15s; margin-top: 8px; }
     .bonus-add-btn:hover { color: var(--text); border-color: rgba(255,255,255,0.2); }
 
-    /* Results entry */
-    .result-item { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
+    /* ── Bonus results ── */
+    .result-item { display: flex; align-items: center; gap: 12px; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
     .result-item:last-child { border-bottom: none; }
-    .result-question { flex: 1; font-size: 0.82rem; font-weight: 600; }
-    .result-opts { display: flex; gap: 6px; }
-    .result-opt { padding: 5px 12px; border-radius: 5px; font-size: 0.72rem; font-weight: 700; cursor: pointer; border: 1.5px solid var(--border); background: transparent; color: var(--muted); font-family: inherit; transition: all 0.12s; }
+    .result-question { flex: 1; font-size: 0.8rem; font-weight: 600; }
+    .result-opts { display: flex; gap: 5px; }
+    .result-opt { padding: 4px 10px; border-radius: 5px; font-size: 0.7rem; font-weight: 700; cursor: pointer; border: 1.5px solid var(--border); background: transparent; color: var(--muted); font-family: inherit; transition: all 0.12s; }
     .result-opt.selected { background: var(--maroon); border-color: var(--maroon); color: #fff; }
 
-    .status-msg { font-size: 0.75rem; font-weight: 600; padding: 10px 14px; border-radius: 6px; margin-top: 12px; display: none; }
+    .status-msg { font-size: 0.75rem; font-weight: 600; padding: 9px 12px; border-radius: 6px; margin-top: 10px; display: none; }
     .status-msg.success { background: var(--green-dim); color: var(--green); display: block; }
     .status-msg.error   { background: rgba(239,68,68,0.1); color: var(--red); display: block; }
 
-    .empty-state { text-align: center; padding: 28px 16px; color: var(--faint); font-size: 0.8rem; }
-
+    /* ── Save bar ── */
     .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: var(--surface); border-top: 1px solid var(--border); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 20; }
     .save-bar-info { font-size: 0.75rem; color: var(--muted); }
+
+    .loading { text-align: center; padding: 40px 14px; color: var(--muted); font-size: 0.82rem; }
+
+    /* ── Mobile ── */
+    @media (max-width: 768px) {
+      .commissioner-layout { grid-template-columns: 1fr; }
+      .game-column { position: relative; top: auto; height: 44vh; border-right: none; border-bottom: 1px solid var(--border); }
+      .config-column { padding: 14px 14px 80px; }
+    }
   </style>
 </head>
 <body>
@@ -178,7 +188,7 @@
   </div>
 </div>
 
-<!-- Main commissioner UI (hidden until authed) -->
+<!-- Commissioner UI -->
 <div id="commUI" style="display:none">
 
   <div class="week-bar">
@@ -187,73 +197,97 @@
     <button class="week-nav-btn" id="nextWeekBtn" disabled>Next &#8594;</button>
   </div>
 
-  <div class="content">
+  <div class="commissioner-layout">
 
-    <!-- Game picker from ESPN -->
-    <div class="section">
-      <div class="section-header">
-        <span class="section-title">Step 1 — Select Games from ESPN</span>
-        <button class="btn btn-secondary btn-sm" id="refreshEspnBtn" onclick="loadEspn()">Refresh</button>
+    <!-- LEFT: All FBS games -->
+    <div class="game-column">
+      <div class="game-col-header">
+        <span class="game-col-title">All FBS Games</span>
+        <div style="display:flex;align-items:center;gap:10px">
+          <span class="game-col-meta" id="gameColCount"></span>
+          <button class="btn btn-secondary btn-xs" onclick="loadEspn()">Refresh</button>
+        </div>
       </div>
-      <div class="section-body" id="espnList">
-        <div class="loading">Loading ESPN games...</div>
-      </div>
+      <div id="espnList"><div class="loading">Loading...</div></div>
     </div>
 
-    <!-- Selected games / category assignment -->
-    <div class="section">
-      <div class="section-header">
-        <span class="section-title">Step 2 — Assign Categories</span>
-        <span style="font-size:0.68rem;color:var(--muted)" id="selectedCount">0 games selected</span>
-      </div>
-      <div class="section-body">
-        <div id="selectedList"><div class="empty-state">Select games above to assign categories.</div></div>
-      </div>
-    </div>
+    <!-- RIGHT: Contest builder -->
+    <div class="config-column">
 
-    <!-- Bonus questions -->
-    <div class="section">
-      <div class="section-header">
-        <span class="section-title">Step 3 — Bonus Questions</span>
+      <div class="section">
+        <div class="section-header">
+          <span class="section-title">Pick 'Em Straight Up</span>
+          <span class="section-count" id="suCount">0 games</span>
+        </div>
+        <div class="section-body">
+          <div class="section-game-list" id="suList"></div>
+          <div class="empty-state" id="suEmpty">No games added — click <strong>SU</strong> next to any game on the left.</div>
+        </div>
       </div>
-      <div class="section-body">
-        <div class="bonus-list" id="bonusList"></div>
-        <button class="bonus-add-btn" onclick="addBonus()">+ Add Bonus Question</button>
-      </div>
-    </div>
 
-    <!-- Save config -->
-    <div class="section">
-      <div class="section-header">
-        <span class="section-title">Step 4 — Save Week Configuration</span>
+      <div class="section">
+        <div class="section-header">
+          <span class="section-title">Pick 'Em Against the Spread</span>
+          <span class="section-count" id="atsCount">0 games</span>
+        </div>
+        <div class="section-body">
+          <div class="section-game-list" id="atsList"></div>
+          <div class="empty-state" id="atsEmpty">No games added — click <strong>ATS</strong> next to any game on the left.</div>
+        </div>
       </div>
-      <div class="section-body">
-        <p style="font-size:0.78rem;color:var(--muted);margin-bottom:14px">Saving will overwrite any existing configuration for this week. Player picks already submitted are not affected.</p>
-        <button class="btn btn-primary" id="saveConfigBtn" onclick="saveConfig()">Save Week Config</button>
-        <div class="status-msg" id="saveConfigMsg"></div>
-      </div>
-    </div>
 
-    <!-- Bonus results entry -->
-    <div class="section">
-      <div class="section-header">
-        <span class="section-title">Bonus Results — Enter Correct Answers</span>
+      <div class="section">
+        <div class="section-header">
+          <span class="section-title">Pick 'Em Over/Under</span>
+          <span class="section-count" id="ouCount">0 games</span>
+        </div>
+        <div class="section-body">
+          <div class="section-game-list" id="ouList"></div>
+          <div class="empty-state" id="ouEmpty">No games added — click <strong>O/U</strong> next to any game on the left.</div>
+        </div>
       </div>
-      <div class="section-body">
-        <p style="font-size:0.78rem;color:var(--muted);margin-bottom:14px">After the games are played, select the correct answer for each bonus question.</p>
-        <div id="bonusResultsList"><div class="empty-state">Load an existing week config to enter results.</div></div>
-        <button class="btn btn-primary" id="saveBonusBtn" onclick="saveBonusResults()" style="margin-top:14px;display:none">Save Bonus Results</button>
-        <div class="status-msg" id="saveBonusMsg"></div>
-      </div>
-    </div>
 
+      <div class="section">
+        <div class="section-header">
+          <span class="section-title">Pick 'Em Bonus</span>
+          <span class="section-count" id="bonusCount">0 questions</span>
+        </div>
+        <div class="section-body">
+          <div class="bonus-list" id="bonusList"></div>
+          <button class="bonus-add-btn" onclick="addBonus()">+ Add Bonus Question</button>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-header">
+          <span class="section-title">Save Week Configuration</span>
+        </div>
+        <div class="section-body">
+          <p style="font-size:0.75rem;color:var(--muted);margin-bottom:12px">Saving overwrites the existing config for this week. Submitted player picks are not affected.</p>
+          <button class="btn btn-primary" id="saveConfigBtn" onclick="saveConfig()">Save Week Config</button>
+          <div class="status-msg" id="saveConfigMsg"></div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-header">
+          <span class="section-title">Bonus Results</span>
+        </div>
+        <div class="section-body">
+          <p style="font-size:0.75rem;color:var(--muted);margin-bottom:12px">After games are played, enter the correct answers for each bonus question.</p>
+          <div id="bonusResultsList"><div class="empty-state" style="padding:10px 0">No bonus questions configured for this week.</div></div>
+          <button class="btn btn-primary" id="saveBonusBtn" onclick="saveBonusResults()" style="margin-top:12px;display:none">Save Bonus Results</button>
+          <div class="status-msg" id="saveBonusMsg"></div>
+        </div>
+      </div>
+
+    </div>
   </div>
+</div>
 
-  <div class="save-bar">
-    <span class="save-bar-info">Week <strong id="saveBarWeek">—</strong> · <span id="saveBarCount">0</span> games · <span id="saveBarBonus">0</span> bonus questions</span>
-    <button class="btn btn-primary" onclick="saveConfig()">Save Config</button>
-  </div>
-
+<div class="save-bar">
+  <span class="save-bar-info">Week <strong id="saveBarWeek">—</strong> &nbsp;·&nbsp; <span id="saveBarSU">0</span> SU &nbsp;·&nbsp; <span id="saveBarATS">0</span> ATS &nbsp;·&nbsp; <span id="saveBarOU">0</span> O/U &nbsp;·&nbsp; <span id="saveBarBonus">0</span> bonus</span>
+  <button class="btn btn-primary" onclick="saveConfig()">Save Config</button>
 </div>
 
 <script>
@@ -299,9 +333,9 @@ async function loadWeek(week, year) {
   document.getElementById('weekLabel').textContent = `WEEK ${week} · ${year} SEASON`;
   document.getElementById('prevWeekBtn').disabled = week <= 1;
   document.getElementById('nextWeekBtn').disabled = false;
-  updateSaveBar();
-  renderSelectedList();
+  renderSections();
   renderBonusList();
+  updateSaveBar();
 
   try {
     const cfg = await fetch(`${GAS_URL}?action=getWeekConfig&week=${week}&year=${year}`).then(r => r.json());
@@ -316,9 +350,10 @@ async function loadWeek(week, year) {
     if (cfg.bonusQuestions?.length) {
       bonusQuestions = cfg.bonusQuestions.map(q => ({ questionText: q.questionText, optionA: q.optionA, optionB: q.optionB, questionId: q.questionId }));
     }
-    renderSelectedList();
+    renderSections();
     renderBonusList();
     renderBonusResults(cfg.bonusQuestions || []);
+    updateSaveBar();
   } catch(e) {}
 
   loadEspn();
@@ -334,9 +369,10 @@ async function loadEspn() {
     currentYear = data.season?.year || currentYear;
     document.getElementById('weekLabel').textContent = `WEEK ${currentWeek} · ${currentYear} SEASON`;
     document.getElementById('prevWeekBtn').disabled = currentWeek <= 1;
-    document.getElementById('saveBarWeek').textContent = currentWeek;
     espnGames = parseEspnGames(data.events || []);
+    document.getElementById('gameColCount').textContent = `${espnGames.length} games`;
     renderEspnList();
+    updateSaveBar();
   } catch(e) {
     document.getElementById('espnList').innerHTML = '<div class="loading">Failed to load ESPN games.</div>';
   }
@@ -356,7 +392,6 @@ function parseEspnGames(events) {
       spreadDetail: odds?.details || null,
       spread: odds?.spread ?? null,
       overUnder: odds?.overUnder ?? null,
-      kickoff,
       kickoffStr: kickoff.toLocaleString('en-US', { weekday:'short', month:'short', day:'numeric', hour:'numeric', minute:'2-digit', timeZoneName:'short' }),
     };
   });
@@ -364,102 +399,105 @@ function parseEspnGames(events) {
 
 function renderEspnList() {
   const list = document.getElementById('espnList');
-  if (!espnGames.length) { list.innerHTML = '<div class="empty-state">No games found for this week.</div>'; return; }
+  if (!espnGames.length) { list.innerHTML = '<div class="loading">No games found for this week.</div>'; return; }
 
   list.innerHTML = espnGames.map(g => {
-    const checked = selectedGames[g.id] ? 'checked' : '';
-    const spreadHtml = g.spreadDetail
-      ? `<span class="line-tag line-spread">${g.spreadDetail}</span>`
-      : `<span class="line-none">No line</span>`;
-    const ouHtml = g.overUnder != null
-      ? `<span class="line-tag line-ou">O/U ${g.overUnder}</span>`
-      : '';
-    const currentPickType = selectedGames[g.id]?.pickType || 'ats';
-    const currentTotal = selectedGames[g.id]?.total || (g.overUnder != null ? g.overUnder : '');
+    const assigned = selectedGames[g.id];
+    const spreadHtml = g.spreadDetail ? `<span class="line-tag line-spread">${g.spreadDetail}</span>` : '';
+    const ouHtml = g.overUnder != null ? `<span class="line-tag line-ou">O/U ${g.overUnder}</span>` : '';
 
-    return `<div class="espn-game" id="eg_${g.id}">
-      <input type="checkbox" class="espn-game-check" id="chk_${g.id}" ${checked} onchange="toggleGame('${g.id}')">
-      <div class="espn-game-info">
-        <div class="espn-game-matchup">${g.awayTeam} @ ${g.homeTeam}</div>
-        <div class="espn-game-time">${g.kickoffStr}</div>
-        <div class="espn-game-lines">${spreadHtml}${ouHtml}</div>
-        <div class="ou-total-wrap${selectedGames[g.id]?.pickType === 'ou' ? ' visible' : ''}" id="ouTotal_${g.id}">
-          <label>Total:</label>
-          <input type="number" step="0.5" min="0" placeholder="47.5" id="total_${g.id}" value="${currentTotal}" oninput="setTotal('${g.id}', this.value)">
-        </div>
+    return `<div class="game-row${assigned ? ' assigned' : ''}" id="gr_${g.id}">
+      <div class="game-row-info">
+        <div class="game-row-matchup">${g.awayAbbr} @ ${g.homeAbbr}</div>
+        <div class="game-row-time">${g.kickoffStr}</div>
+        ${spreadHtml || ouHtml ? `<div class="game-row-lines">${spreadHtml}${ouHtml}</div>` : ''}
       </div>
-      <div class="espn-game-type" id="typeBtns_${g.id}" style="${checked ? '' : 'display:none'}">
-        ${['su','ats','ou'].map(t => `<button class="type-btn ${t}${currentPickType===t&&checked?' active':''}" onclick="setType('${g.id}','${t}')">${t.toUpperCase()}</button>`).join('')}
+      <div class="game-row-btns">
+        <button class="assign-btn su${assigned?.pickType==='su'?' active':''}" onclick="assignGame('${g.id}','su')">SU</button>
+        <button class="assign-btn ats${assigned?.pickType==='ats'?' active':''}" onclick="assignGame('${g.id}','ats')">ATS</button>
+        <button class="assign-btn ou${assigned?.pickType==='ou'?' active':''}" onclick="assignGame('${g.id}','ou')">O/U</button>
       </div>
     </div>`;
   }).join('');
 }
 
-function toggleGame(gameId) {
-  const chk = document.getElementById(`chk_${gameId}`);
-  const typeBtns = document.getElementById(`typeBtns_${gameId}`);
-  if (chk.checked) {
-    const g = espnGames.find(g => g.id === gameId);
-    if (!selectedGames[gameId]) {
-      selectedGames[gameId] = {
-        game: g, pickType: 'ats',
-        total: g.overUnder != null ? String(g.overUnder) : '',
-      };
-    }
-    typeBtns.style.display = 'flex';
-    typeBtns.querySelectorAll('.type-btn').forEach(b => b.classList.toggle('active', b.classList.contains(selectedGames[gameId].pickType)));
-  } else {
+// ── Game assignment ───────────────────────────────────────────────────────────
+function assignGame(gameId, pickType) {
+  const g = espnGames.find(g => g.id === gameId);
+  if (!g) return;
+
+  if (selectedGames[gameId]?.pickType === pickType) {
     delete selectedGames[gameId];
-    typeBtns.style.display = 'none';
-    const ouWrap = document.getElementById(`ouTotal_${gameId}`);
-    if (ouWrap) ouWrap.classList.remove('visible');
+  } else {
+    const prevTotal = selectedGames[gameId]?.total;
+    selectedGames[gameId] = {
+      game: g, pickType,
+      total: prevTotal || (g.overUnder != null ? String(g.overUnder) : ''),
+    };
   }
-  renderSelectedList();
+
+  const row = document.getElementById(`gr_${gameId}`);
+  if (row) {
+    const assigned = selectedGames[gameId];
+    row.classList.toggle('assigned', !!assigned);
+    row.querySelectorAll('.assign-btn').forEach(btn => {
+      const t = btn.classList.contains('su') ? 'su' : btn.classList.contains('ats') ? 'ats' : 'ou';
+      btn.classList.toggle('active', !!assigned && assigned.pickType === t);
+    });
+  }
+
+  renderSections();
   updateSaveBar();
 }
 
-function setType(gameId, type) {
-  if (!selectedGames[gameId]) return;
-  selectedGames[gameId].pickType = type;
-  if (type === 'ou' && !selectedGames[gameId].total) {
-    const g = espnGames.find(g => g.id === gameId);
-    if (g?.overUnder != null) selectedGames[gameId].total = String(g.overUnder);
-    const inp = document.getElementById(`total_${gameId}`);
-    if (inp) inp.value = selectedGames[gameId].total;
+function removeGame(gameId) {
+  delete selectedGames[gameId];
+  const row = document.getElementById(`gr_${gameId}`);
+  if (row) {
+    row.classList.remove('assigned');
+    row.querySelectorAll('.assign-btn').forEach(b => b.classList.remove('active'));
   }
-  const typeBtns = document.getElementById(`typeBtns_${gameId}`);
-  if (typeBtns) typeBtns.querySelectorAll('.type-btn').forEach(b => b.classList.toggle('active', b.classList.contains(type)));
-  const ouWrap = document.getElementById(`ouTotal_${gameId}`);
-  if (ouWrap) ouWrap.classList.toggle('visible', type === 'ou');
-  renderSelectedList();
+  renderSections();
+  updateSaveBar();
 }
 
 function setTotal(gameId, val) {
   if (selectedGames[gameId]) selectedGames[gameId].total = val;
 }
 
-function renderSelectedList() {
-  const list = document.getElementById('selectedList');
-  const games = Object.values(selectedGames);
-  document.getElementById('selectedCount').textContent = `${games.length} game${games.length !== 1 ? 's' : ''} selected`;
+// ── Render right-column sections ──────────────────────────────────────────────
+function renderSections() {
+  const buckets = { su: [], ats: [], ou: [] };
+  Object.values(selectedGames).forEach(sg => { if (buckets[sg.pickType]) buckets[sg.pickType].push(sg); });
+  renderTypeSection('suList',  'suEmpty',  'suCount',  buckets.su,  'su');
+  renderTypeSection('atsList', 'atsEmpty', 'atsCount', buckets.ats, 'ats');
+  renderTypeSection('ouList',  'ouEmpty',  'ouCount',  buckets.ou,  'ou');
+}
 
-  if (!games.length) { list.innerHTML = '<div class="empty-state">Select games above to assign categories.</div>'; return; }
+function renderTypeSection(listId, emptyId, countId, games, pickType) {
+  const list  = document.getElementById(listId);
+  const empty = document.getElementById(emptyId);
+  document.getElementById(countId).textContent = `${games.length} game${games.length !== 1 ? 's' : ''}`;
 
-  const typeLabel = { su: 'Straight Up', ats: 'Against the Spread', ou: 'Over / Under' };
-  list.innerHTML = `<div class="selected-list">${games.map(({ game: g, pickType, total }) => `
-    <div class="selected-item">
-      <div class="selected-item-info">
-        <div class="selected-item-matchup">${g.awayTeam} @ ${g.homeTeam}</div>
-        <div class="selected-item-meta">${g.spreadDetail || 'No spread'}${pickType === 'ou' && total ? ` · Total: ${total}` : ''}</div>
+  if (!games.length) { list.innerHTML = ''; empty.style.display = 'block'; return; }
+  empty.style.display = 'none';
+
+  list.innerHTML = games.map(({ game: g, total }) => `
+    <div class="section-game-item">
+      <div class="section-game-item-info">
+        <div class="section-game-item-matchup">${g.awayTeam} @ ${g.homeTeam}</div>
+        <div class="section-game-item-meta">${g.spreadDetail || 'No line'}</div>
       </div>
-      <span class="type-badge ${pickType}">${typeLabel[pickType]}</span>
-    </div>`).join('')}</div>`;
+      ${pickType === 'ou' ? `<input type="number" class="total-input" step="0.5" min="0" placeholder="O/U" value="${total || ''}" oninput="setTotal('${g.id}', this.value)" title="Total">` : ''}
+      <button class="remove-btn" onclick="removeGame('${g.id}')" title="Remove">×</button>
+    </div>`).join('');
 }
 
 // ── Bonus ─────────────────────────────────────────────────────────────────────
 function addBonus() {
   bonusQuestions.push({ questionText: '', optionA: '', optionB: '' });
   renderBonusList();
+  updateSaveBar();
 }
 
 function removeBonus(i) {
@@ -470,12 +508,13 @@ function removeBonus(i) {
 
 function renderBonusList() {
   const list = document.getElementById('bonusList');
-  if (!bonusQuestions.length) { list.innerHTML = ''; updateSaveBar(); return; }
+  document.getElementById('bonusCount').textContent = `${bonusQuestions.length} question${bonusQuestions.length !== 1 ? 's' : ''}`;
+  if (!bonusQuestions.length) { list.innerHTML = ''; return; }
 
   list.innerHTML = bonusQuestions.map((q, i) => `
     <div class="bonus-item">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-        <span style="font-size:0.65rem;font-weight:800;letter-spacing:0.5px;color:var(--muted);text-transform:uppercase">Bonus ${i+1}</span>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <span style="font-size:0.62rem;font-weight:800;letter-spacing:0.5px;color:var(--muted);text-transform:uppercase">Bonus ${i+1}</span>
         <button class="btn btn-danger btn-xs" onclick="removeBonus(${i})">Remove</button>
       </div>
       <div class="bonus-row">
@@ -491,8 +530,6 @@ function renderBonusList() {
         <input type="text" placeholder="e.g. Oklahoma" value="${q.optionB}" oninput="bonusQuestions[${i}].optionB=this.value">
       </div>
     </div>`).join('');
-
-  updateSaveBar();
 }
 
 // ── Bonus Results ─────────────────────────────────────────────────────────────
@@ -500,7 +537,7 @@ function renderBonusResults(questions) {
   const list = document.getElementById('bonusResultsList');
   const btn  = document.getElementById('saveBonusBtn');
   if (!questions.length) {
-    list.innerHTML = '<div class="empty-state">No bonus questions configured for this week.</div>';
+    list.innerHTML = '<div class="empty-state" style="padding:10px 0">No bonus questions configured for this week.</div>';
     btn.style.display = 'none';
     return;
   }
@@ -568,13 +605,14 @@ async function saveBonusResults() {
 }
 
 function updateSaveBar() {
-  document.getElementById('saveBarWeek').textContent = currentWeek;
-  document.getElementById('saveBarCount').textContent = Object.keys(selectedGames).length;
+  const buckets = { su: 0, ats: 0, ou: 0 };
+  Object.values(selectedGames).forEach(sg => { if (buckets[sg.pickType] !== undefined) buckets[sg.pickType]++; });
+  document.getElementById('saveBarWeek').textContent  = currentWeek;
+  document.getElementById('saveBarSU').textContent    = buckets.su;
+  document.getElementById('saveBarATS').textContent   = buckets.ats;
+  document.getElementById('saveBarOU').textContent    = buckets.ou;
   document.getElementById('saveBarBonus').textContent = bonusQuestions.length;
 }
-
-// Init
-loadEspn();
 </script>
 </body>
 </html>

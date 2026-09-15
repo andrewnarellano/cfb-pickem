@@ -288,7 +288,11 @@
 
 <div class="save-bar">
   <span class="save-bar-info">Week <strong id="saveBarWeek">—</strong> &nbsp;·&nbsp; <span id="saveBarSU">0</span> SU &nbsp;·&nbsp; <span id="saveBarATS">0</span> ATS &nbsp;·&nbsp; <span id="saveBarOU">0</span> O/U &nbsp;·&nbsp; <span id="saveBarBonus">0</span> bonus</span>
-  <button class="btn btn-primary" onclick="saveConfig()">Save Config</button>
+  <div style="display:flex;align-items:center;gap:10px">
+    <span id="saveProgressMsg" style="font-size:0.68rem;color:var(--muted);display:none"></span>
+    <button class="btn btn-secondary" onclick="saveProgress()">Save Progress</button>
+    <button class="btn btn-primary" onclick="saveConfig()">Save Config</button>
+  </div>
 </div>
 
 <script>
@@ -385,6 +389,7 @@ async function loadEspn() {
     document.getElementById('prevWeekBtn').disabled = !currentWeek || currentWeek <= 1;
     espnGames = parseEspnGames(data.events || []);
     document.getElementById('gameColCount').textContent = `${espnGames.length} games`;
+    loadProgress(currentWeek, currentYear);
     renderEspnList();
     updateSaveBar();
   } catch(e) {
@@ -616,6 +621,30 @@ async function saveBonusResults() {
   } finally {
     btn.disabled = false; btn.textContent = 'Save Bonus Results';
   }
+}
+
+// ── Local progress ────────────────────────────────────────────────────────────
+function saveProgress() {
+  if (!currentWeek) return;
+  const state = { selectedGames, bonusQuestions };
+  localStorage.setItem(`commProgress_${currentYear}_${currentWeek}`, JSON.stringify(state));
+  const msg = document.getElementById('saveProgressMsg');
+  msg.textContent = `Progress saved ${new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}`;
+  msg.style.display = 'inline';
+  setTimeout(() => msg.style.display = 'none', 3000);
+}
+
+function loadProgress(week, year) {
+  const raw = localStorage.getItem(`commProgress_${year}_${week}`);
+  if (!raw) return;
+  try {
+    const state = JSON.parse(raw);
+    if (state.selectedGames) selectedGames = state.selectedGames;
+    if (state.bonusQuestions) bonusQuestions = state.bonusQuestions;
+    renderSections();
+    renderBonusList();
+    updateSaveBar();
+  } catch(e) {}
 }
 
 function updateSaveBar() {

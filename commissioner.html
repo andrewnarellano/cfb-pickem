@@ -385,15 +385,25 @@ async function loadWeek(week, year) {
 async function loadEspn() {
   document.getElementById('espnList').innerHTML = '<div class="loading">Loading ESPN games...</div>';
   try {
-    const params = currentWeek
-      ? `?week=${currentWeek}&season=${currentYear}&seasontype=2&limit=100`
-      : `?seasontype=2&limit=100`;
-    const data = await fetch(ESPN + params).then(r => r.json());
-    currentWeek = data.week?.number || currentWeek;
-    currentYear = data.season?.year || currentYear;
-    document.getElementById('weekLabel').textContent = `WEEK ${currentWeek} · ${currentYear} SEASON`;
-    document.getElementById('prevWeekBtn').disabled = !currentWeek || currentWeek <= 1;
-    espnGames = parseEspnGames(data.events || []);
+    const base = currentWeek
+      ? `seasontype=2&week=${currentWeek}&season=${currentYear}&groups=80&limit=100`
+      : `seasontype=2&groups=80&limit=100`;
+
+    let allEvents = [], page = 1, totalPages = 1;
+    do {
+      const data = await fetch(`${ESPN}?${base}&page=${page}`).then(r => r.json());
+      if (page === 1) {
+        currentWeek = data.week?.number || currentWeek;
+        currentYear = data.season?.year || currentYear;
+        totalPages = data.pageCount ?? 1;
+        document.getElementById('weekLabel').textContent = `WEEK ${currentWeek} · ${currentYear} SEASON`;
+        document.getElementById('prevWeekBtn').disabled = !currentWeek || currentWeek <= 1;
+      }
+      allEvents = allEvents.concat(data.events || []);
+      page++;
+    } while (page <= totalPages);
+
+    espnGames = parseEspnGames(allEvents);
     document.getElementById('gameColCount').textContent = `${espnGames.length} games`;
     loadProgress(currentWeek, currentYear);
     renderEspnList();

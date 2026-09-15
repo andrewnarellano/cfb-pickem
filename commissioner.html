@@ -163,6 +163,7 @@
     <a href="scoreboard.html" class="nav-btn">Scoreboard</a>
     <a href="standings.html" class="nav-btn">Standings</a>
     <a href="commissioner.html" class="nav-btn active">Commissioner</a>
+    <button class="nav-btn" onclick="signOut()" style="cursor:pointer">Sign Out</button>
   </div>
   <button class="hamburger" id="hamburger" aria-label="Menu">&#9776;
     <div class="nav-dropdown" id="navDropdown">
@@ -308,10 +309,21 @@ function checkAuth() {
   const val = document.getElementById('authInput').value;
   if (!val) return;
   password = val;
+  localStorage.setItem('commPass', val);
+  showCommUI();
+}
+
+function showCommUI() {
   document.getElementById('authGate').style.display = 'none';
   document.getElementById('commUI').style.display = 'block';
   loadEspn();
 }
+
+// Auto-login if password is stored
+const saved = localStorage.getItem('commPass');
+if (saved) { password = saved; showCommUI(); }
+
+function signOut() { localStorage.removeItem('commPass'); location.reload(); }
 
 // ── Nav ───────────────────────────────────────────────────────────────────────
 document.getElementById('hamburger').addEventListener('click', function(e) {

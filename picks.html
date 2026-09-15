@@ -241,7 +241,10 @@ let userName = localStorage.getItem('cfb_username') || '';
 if (!userName) openNameModal(true);
 else document.getElementById('userName').textContent = userName;
 
-loadWeek(null, null);
+const _urlParams = new URLSearchParams(window.location.search);
+const _initWeek = _urlParams.get('week') ? parseInt(_urlParams.get('week')) : null;
+const _initYear = _urlParams.get('year') ? parseInt(_urlParams.get('year')) : null;
+loadWeek(_initWeek, _initYear);
 
 // ── Load ──────────────────────────────────────────────────────────────────────
 

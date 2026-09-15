@@ -232,7 +232,9 @@ function render(espnData, sheetPicks) {
   sheetPicks.forEach(p => {
     if (!users[p.username]) users[p.username] = { pts: 0, wins: 0, losses: 0, pending: 0 };
     const res = computeResult(p.pickedTeam, String(p.gameId), p.pickType || 'ats', espnMap);
-    const pts = res === 'WIN' ? parseInt(p.confidence) : res === 'LOSS' ? -parseInt(p.confidence) : 0;
+    const conf = parseInt(p.confidence);
+    const canLose = p.pickType === 'ats' || p.pickType === 'ou';
+    const pts = res === 'WIN' ? conf : (res === 'LOSS' && canLose) ? -conf : 0;
     if (res === 'WIN')  { users[p.username].pts += pts; users[p.username].wins++; }
     else if (res === 'LOSS') { users[p.username].pts += pts; users[p.username].losses++; }
     else if (!res)      { users[p.username].pending++; }

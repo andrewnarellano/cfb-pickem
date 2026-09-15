@@ -207,7 +207,9 @@ function render(allPicks, weeks, espnByWeek, configByWeek) {
     const espnMap = espnByWeek[wk] || {};
     const cfg     = configByWeek[wk] || { games: [], bonusQuestions: [] };
     const res = computeResult(p.pickedTeam, String(p.gameId), p.pickType || 'ats', espnMap, cfg);
-    const pts = res==='WIN' ? parseInt(p.confidence) : res==='LOSS' ? -parseInt(p.confidence) : 0;
+    const conf = parseInt(p.confidence);
+    const canLose = p.pickType === 'ats' || p.pickType === 'ou';
+    const pts = res==='WIN' ? conf : (res==='LOSS' && canLose) ? -conf : 0;
 
     if (!users[p.username]) users[p.username] = { totalPts:0, wins:0, losses:0, pushes:0, weeks:{} };
     if (!users[p.username].weeks[wk]) users[p.username].weeks[wk] = { pts:0, wins:0, losses:0 };

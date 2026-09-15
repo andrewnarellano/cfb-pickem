@@ -80,14 +80,13 @@
     .game-row.assigned { background: rgba(80,0,0,0.1); }
     .game-row-info { flex: 1; min-width: 0; }
     .game-row-matchup { font-size: 0.8rem; font-weight: 700; line-height: 1.3; }
-    .game-row-time { font-size: 0.6rem; color: var(--muted); margin-top: 2px; }
-    .game-row-lines { display: flex; gap: 5px; margin-top: 5px; flex-wrap: wrap; }
-    .line-tag { font-size: 0.6rem; font-weight: 700; padding: 1px 6px; border-radius: 3px; }
+    .game-row-time { font-size: 0.72rem; color: var(--muted); margin-top: 2px; }
+    .game-row-lines { display: flex; gap: 6px; margin-top: 6px; flex-wrap: wrap; align-items: center; }
+    .line-tag { font-size: 0.7rem; font-weight: 700; padding: 2px 7px; border-radius: 3px; }
     .line-spread { background: var(--maroon-dim); color: var(--yellow); }
     .line-ou { background: rgba(6,95,70,0.3); color: #6ee7b7; }
 
-    .game-row-btns { display: flex; gap: 3px; margin-top: 6px; }
-    .assign-btn { padding: 3px 7px; border-radius: 4px; font-size: 0.6rem; font-weight: 800; cursor: pointer; border: 1.5px solid; background: transparent; font-family: inherit; transition: all 0.12s; letter-spacing: 0.3px; }
+    .assign-btn { padding: 3px 8px; border-radius: 4px; font-size: 0.68rem; font-weight: 800; cursor: pointer; border: 1.5px solid; background: transparent; font-family: inherit; transition: all 0.12s; letter-spacing: 0.3px; }
     .assign-btn.su  { border-color: rgba(30,64,175,0.45); color: #93c5fd; }
     .assign-btn.ats { border-color: rgba(80,0,0,0.6); color: var(--yellow); }
     .assign-btn.ou  { border-color: rgba(6,95,70,0.5); color: #6ee7b7; }
@@ -429,8 +428,8 @@ function renderEspnList() {
       <div class="game-row-info">
         <div class="game-row-matchup">${g.awayTeam} @ ${g.homeTeam}</div>
         <div class="game-row-time">${g.kickoffStr}</div>
-        ${spreadHtml || ouHtml ? `<div class="game-row-lines">${spreadHtml}${ouHtml}</div>` : ''}
-        <div class="game-row-btns">
+        <div class="game-row-lines">
+          ${spreadHtml}${ouHtml}
           <button class="assign-btn su${assigned?.pickType==='su'?' active':''}" onclick="assignGame('${g.id}','su')">SU</button>
           <button class="assign-btn ats${assigned?.pickType==='ats'?' active':''}" onclick="assignGame('${g.id}','ats')">ATS</button>
           <button class="assign-btn ou${assigned?.pickType==='ou'?' active':''}" onclick="assignGame('${g.id}','ou')">O/U</button>

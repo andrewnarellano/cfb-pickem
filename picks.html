@@ -236,6 +236,7 @@ let currentWeek = 1, currentYear = 2026;
 let configGames = [], bonusQuestions = [], espnGameMap = {};
 let sheetPicks = [];
 let picks = {};
+let lockAt = null;
 let userName = localStorage.getItem('cfb_username') || '';
 let nameForced = false;
 
@@ -287,6 +288,14 @@ async function loadWeek(week, year) {
     bonusQuestions = cfg.bonusQuestions || [];
     sheetPicks     = sheetData;
 
+    // Lock time = earliest kickoff among configured games
+    lockAt = configGames.reduce((min, g) => {
+      const d = espnGameMap[g.gameId]?.date;
+      if (!d) return min;
+      const t = new Date(d).getTime();
+      return min === null ? t : Math.min(min, t);
+    }, null);
+
     restoreLocalPicks();
     render();
   } catch(e) {
@@ -334,6 +343,7 @@ function render() {
   document.getElementById('submitBar').style.display = 'flex';
   updateSubmitBar();
   renderAllPicks();
+  scheduleGlobalLock();
 }
 
 function makeCatHeader(key, label) {
@@ -376,10 +386,10 @@ function buildCard(cfg, live) {
   card.className = 'game-card';
   card.id = `game_${cfg.gameId}`;
 
-  const locked   = live ? live.state !== 'pre' : false;
+  const locked   = (lockAt !== null && Date.now() >= lockAt) || (live ? live.state !== 'pre' : false);
   const date     = live ? new Date(live.date) : null;
   const timeStr  = date ? date.toLocaleString('en-US', { weekday:'short', month:'short', day:'numeric', hour:'numeric', minute:'2-digit', timeZoneName:'short' }) : '';
-  const lockTime = date ? date.toLocaleTimeString('en-US', { hour:'numeric', minute:'2-digit', timeZoneName:'short' }) : '';
+  const lockTime = lockAt ? new Date(lockAt).toLocaleTimeString('en-US', { hour:'numeric', minute:'2-digit', timeZoneName:'short' }) : (date ? date.toLocaleTimeString('en-US', { hour:'numeric', minute:'2-digit', timeZoneName:'short' }) : '');
   const statusText = live?.state === 'in' ? '● LIVE' : live?.completed ? 'FINAL' : '';
   const statusCls  = live?.state === 'in' ? 'live'  : live?.completed ? 'final' : '';
   const isAts = cfg.pickType === 'ats';
@@ -433,7 +443,7 @@ function buildCard(cfg, live) {
 
 function wireCard(card, cfg, live) {
   if (cfg.pickType === 'ou') { wireOUCard(card, cfg, live); return; }
-  if (live && live.state !== 'pre') return;
+  if ((lockAt !== null && Date.now() >= lockAt) || (live && live.state !== 'pre')) return;
 
   const pa      = card.querySelector(`#pa_${cfg.gameId}`);
   const ph      = card.querySelector(`#ph_${cfg.gameId}`);
@@ -456,7 +466,6 @@ function wireCard(card, cfg, live) {
   pa.addEventListener('click', () => selectTeam(cfg.awayTeam));
   ph.addEventListener('click', () => selectTeam(cfg.homeTeam));
   wireConfRow(card, cfg.gameId, cfg.pickType);
-  scheduleLock(cfg.gameId, live?.date);
 }
 
 // ── O/U card ──────────────────────────────────────────────────────────────────
@@ -466,10 +475,10 @@ function buildOUCard(cfg, live) {
   card.className = 'game-card';
   card.id = `game_${cfg.gameId}`;
 
-  const locked   = live ? live.state !== 'pre' : false;
+  const locked   = (lockAt !== null && Date.now() >= lockAt) || (live ? live.state !== 'pre' : false);
   const date     = live ? new Date(live.date) : null;
   const timeStr  = date ? date.toLocaleString('en-US', { weekday:'short', month:'short', day:'numeric', hour:'numeric', minute:'2-digit', timeZoneName:'short' }) : '';
-  const lockTime = date ? date.toLocaleTimeString('en-US', { hour:'numeric', minute:'2-digit', timeZoneName:'short' }) : '';
+  const lockTime = lockAt ? new Date(lockAt).toLocaleTimeString('en-US', { hour:'numeric', minute:'2-digit', timeZoneName:'short' }) : (date ? date.toLocaleTimeString('en-US', { hour:'numeric', minute:'2-digit', timeZoneName:'short' }) : '');
   const statusText = live?.state === 'in' ? '● LIVE' : live?.completed ? 'FINAL' : '';
   const statusCls  = live?.state === 'in' ? 'live'  : live?.completed ? 'final' : '';
 
@@ -508,7 +517,7 @@ function buildOUCard(cfg, live) {
 }
 
 function wireOUCard(card, cfg, live) {
-  if (live && live.state !== 'pre') return;
+  if ((lockAt !== null && Date.now() >= lockAt) || (live && live.state !== 'pre')) return;
   const overBtn  = card.querySelector(`#ou_over_${cfg.gameId}`);
   const underBtn = card.querySelector(`#ou_under_${cfg.gameId}`);
   const confRow  = card.querySelector(`#conf_${cfg.gameId}`);
@@ -528,7 +537,6 @@ function wireOUCard(card, cfg, live) {
   overBtn.addEventListener('click', () => selectOU('Over'));
   underBtn.addEventListener('click', () => selectOU('Under'));
   wireConfRow(card, cfg.gameId, 'ou');
-  scheduleLock(cfg.gameId, live?.date);
 }
 
 // ── Bonus card ────────────────────────────────────────────────────────────────
@@ -593,18 +601,17 @@ function wireConfRow(card, id, pickType) {
   });
 }
 
-function scheduleLock(id, dateStr) {
-  if (!dateStr) return;
-  const msLeft = new Date(dateStr).getTime() - Date.now();
-  if (msLeft > 0 && msLeft < 86_400_000) {
-    setTimeout(() => {
-      const card = document.getElementById(`game_${id}`);
-      if (!card) return;
-      card.querySelectorAll('button').forEach(b => b.disabled = true);
-      const dl = document.getElementById(`dl_${id}`);
-      if (dl) { dl.textContent = 'Picks closed'; dl.classList.add('closed'); }
-    }, msLeft);
-  }
+function scheduleGlobalLock() {
+  if (!lockAt) return;
+  const msLeft = lockAt - Date.now();
+  if (msLeft <= 0 || msLeft >= 86_400_000) return;
+  setTimeout(() => {
+    document.querySelectorAll('.pick-btn, .ou-btn, .bonus-btn, .conf-btn').forEach(b => b.disabled = true);
+    document.querySelectorAll('.deadline-text').forEach(el => {
+      el.textContent = 'Picks closed';
+      el.classList.add('closed');
+    });
+  }, msLeft);
 }
 
 // ── Apply saved picks to UI ───────────────────────────────────────────────────
@@ -672,7 +679,9 @@ function updateBadge(id) {
 }
 
 function allPickableIds() {
-  const gameIds  = configGames.filter(g => !espnGameMap[g.gameId] || espnGameMap[g.gameId].state === 'pre').map(g => g.gameId);
+  const picksLocked = lockAt !== null && Date.now() >= lockAt;
+  if (picksLocked) return [];
+  const gameIds  = configGames.map(g => g.gameId);
   const bonusIds = bonusQuestions.map(q => q.questionId);
   return [...gameIds, ...bonusIds];
 }

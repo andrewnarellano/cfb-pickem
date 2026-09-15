@@ -105,12 +105,14 @@
     <a href="picks.html" class="nav-btn">Picks</a>
     <a href="scoreboard.html" class="nav-btn active">Scoreboard</a>
     <a href="standings.html" class="nav-btn">Standings</a>
+    <a href="commissioner.html" class="nav-btn">Commissioner</a>
   </div>
   <button class="hamburger" id="hamburger" aria-label="Menu">&#9776;
     <div class="nav-dropdown" id="navDropdown">
       <a href="picks.html">Picks</a>
       <a href="scoreboard.html" class="active">Scoreboard</a>
       <a href="standings.html">Standings</a>
+      <a href="commissioner.html">Commissioner</a>
     </div>
   </button>
 </header>
@@ -132,10 +134,11 @@
 
 <script>
 const GAS_URL = 'https://script.google.com/macros/s/AKfycbxof2sk_1jM7YJLGbUALWdrcuROeP3YnxKA60WxU_QtTib9D_QMB9qiWYsfY0Mns26VYg/exec';
-const ESPN = 'http://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard';
+const ESPN    = 'http://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard';
 
 let currentWeek = 1, currentYear = 2026;
 let refreshTimer = null;
+let weekConfig = { games: [], bonusQuestions: [] };
 
 loadWeek(null, null);
 
@@ -143,12 +146,14 @@ async function loadWeek(week, year) {
   document.getElementById('content').innerHTML = '<div class="loading">Loading...</div>';
   const params = week ? `?week=${week}&season=${year}&seasontype=2` : '';
   try {
-    const [espnData, sheetPicks] = await Promise.all([
+    const [espnData, sheetPicks, cfg] = await Promise.all([
       fetch(ESPN + params).then(r => r.json()),
       fetchPicks(week || null, year || null),
+      fetch(`${GAS_URL}?action=getWeekConfig&week=${week || currentWeek}&year=${year || currentYear}`).then(r => r.json()).catch(() => ({ games: [], bonusQuestions: [] })),
     ]);
     currentWeek = espnData.week?.number || 1;
     currentYear = espnData.season?.year || 2026;
+    weekConfig = { games: cfg.games || [], bonusQuestions: cfg.bonusQuestions || [] };
     document.getElementById('weekLabel').textContent = `WEEK ${currentWeek} · ${currentYear} SEASON`;
     document.getElementById('prevWeekBtn').disabled = currentWeek <= 1;
     document.getElementById('nextWeekBtn').disabled = false;
@@ -162,40 +167,60 @@ async function loadWeek(week, year) {
 
 async function fetchPicks(week, year) {
   const w = week || currentWeek, y = year || currentYear;
-  try {
-    const res = await fetch(`${GAS_URL}?action=getPicks&week=${w}&year=${y}`);
-    return await res.json();
-  } catch(e) { return []; }
+  try { return await fetch(`${GAS_URL}?action=getPicks&week=${w}&year=${y}`).then(r => r.json()); }
+  catch(e) { return []; }
 }
 
-function parseGames(events) {
-  return events.map(ev => {
+function parseEspnGames(events) {
+  const map = {};
+  events.forEach(ev => {
     const comp = ev.competitions[0];
     const home = comp.competitors.find(c => c.homeAway === 'home');
     const away = comp.competitors.find(c => c.homeAway === 'away');
-    const odds = comp.odds?.[0];
-    const st = comp.status?.type;
-    return {
+    const st   = comp.status?.type;
+    map[ev.id] = {
       id: ev.id,
-      homeTeam: home.team.displayName, homeAbbr: home.team.abbreviation, homeScore: parseInt(home.score)||0,
-      awayTeam: away.team.displayName, awayAbbr: away.team.abbreviation, awayScore: parseInt(away.score)||0,
-      spreadDetail: odds?.details || null, spread: odds?.spread ?? null,
-      state: st?.state || 'pre', completed: st?.completed || false,
-      statusShort: st?.shortDetail || '',
+      homeTeam: home.team.displayName, homeAbbr: home.team.abbreviation, homeScore: parseInt(home.score) || 0,
+      awayTeam: away.team.displayName, awayAbbr: away.team.abbreviation, awayScore: parseInt(away.score) || 0,
+      state: st?.state || 'pre', completed: st?.completed || false, statusShort: st?.shortDetail || '',
     };
-  }).filter(g => g.spreadDetail);
+  });
+  return map;
 }
 
-function computeResult(pickedTeam, g) {
-  if (!g.completed && g.state !== 'in') return null;
-  if (g.spread === null) return null;
-  const cover = (g.homeScore - g.awayScore) + g.spread;
+function computeResult(pickedTeam, gameId, pickType, espnMap) {
+  if (pickType === 'bonus') {
+    const q = weekConfig.bonusQuestions.find(q => q.questionId === gameId);
+    if (!q?.correctAnswer) return null;
+    const correct = q.correctAnswer === 'A' ? q.optionA : q.optionB;
+    return pickedTeam === correct ? 'WIN' : 'LOSS';
+  }
+  const g = espnMap[gameId];
+  if (!g || (!g.completed && g.state !== 'in')) return null;
+
+  if (pickType === 'su') {
+    if (g.homeScore === g.awayScore) return 'PUSH';
+    return pickedTeam === (g.homeScore > g.awayScore ? g.homeTeam : g.awayTeam) ? 'WIN' : 'LOSS';
+  }
+  if (pickType === 'ou') {
+    const cfg  = weekConfig.games.find(c => c.gameId === gameId);
+    const line = parseFloat(cfg?.total);
+    if (!line) return null;
+    const actual = g.homeScore + g.awayScore;
+    if (Math.abs(actual - line) < 0.01) return 'PUSH';
+    return pickedTeam === 'Over' ? (actual > line ? 'WIN' : 'LOSS') : (actual < line ? 'WIN' : 'LOSS');
+  }
+  // ATS
+  const cfg  = weekConfig.games.find(c => c.gameId === gameId);
+  const spread = parseFloat(cfg?.spread);
+  if (isNaN(spread)) return null;
+  const cover = (g.homeScore - g.awayScore) + spread;
   if (Math.abs(cover) < 0.01) return 'PUSH';
   return pickedTeam === g.homeTeam ? (cover > 0 ? 'WIN' : 'LOSS') : (cover < 0 ? 'WIN' : 'LOSS');
 }
 
 function render(espnData, sheetPicks) {
-  const games = parseGames(espnData.events || []);
+  const espnMap = parseEspnGames(espnData.events || []);
   const content = document.getElementById('content');
 
   if (!sheetPicks.length) {
@@ -203,18 +228,14 @@ function render(espnData, sheetPicks) {
     return;
   }
 
-  // Build per-user weekly totals
   const users = {};
   sheetPicks.forEach(p => {
-    if (!users[p.username]) users[p.username] = { picks:[], pts:0, wins:0, losses:0, pending:0 };
-    const g = games.find(g => String(g.id) === String(p.gameId));
-    const res = g ? computeResult(p.pickedTeam, g) : null;
+    if (!users[p.username]) users[p.username] = { pts: 0, wins: 0, losses: 0, pending: 0 };
+    const res = computeResult(p.pickedTeam, String(p.gameId), p.pickType || 'ats', espnMap);
     const pts = res === 'WIN' ? parseInt(p.confidence) : res === 'LOSS' ? -parseInt(p.confidence) : 0;
-    users[p.username].picks.push({ ...p, game: g, result: res, pts });
-    if (res === 'WIN') { users[p.username].pts += pts; users[p.username].wins++; }
+    if (res === 'WIN')  { users[p.username].pts += pts; users[p.username].wins++; }
     else if (res === 'LOSS') { users[p.username].pts += pts; users[p.username].losses++; }
-    else if (res === 'PUSH') {}
-    else { users[p.username].pending++; }
+    else if (!res)      { users[p.username].pending++; }
   });
 
   const sorted = Object.entries(users).sort(([,a],[,b]) => b.pts - a.pts);
@@ -228,46 +249,61 @@ function render(espnData, sheetPicks) {
   sorted.forEach(([name, u], i) => {
     const ptsCls = u.pts > 0 ? 'pos' : u.pts < 0 ? 'neg' : 'zero';
     html += `<tr>
-      <td class="rank${i<3?' top':''}">${i===0?'🏆':i===1?'2':i===2?'3':i+1}</td>
+      <td class="rank${i < 3 ? ' top' : ''}">${i === 0 ? '🏆' : i === 1 ? '2' : i === 2 ? '3' : i + 1}</td>
       <td class="player-name">${name}</td>
       <td class="record-cell">${u.wins}-${u.losses}</td>
-      <td class="pts-cell ${ptsCls}">${u.pts > 0 ? '+':''}${u.pts}</td>
+      <td class="pts-cell ${ptsCls}">${u.pts > 0 ? '+' : ''}${u.pts}</td>
       <td class="pending-cell">${u.pending > 0 ? u.pending + ' left' : '—'}</td>
     </tr>`;
   });
   html += `</tbody></table></div>`;
 
-  // Game-by-game breakdown
-  html += `<div class="games-section"><div style="font-size:0.65rem;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--orange);margin-bottom:12px;">Game-by-Game Picks</div>`;
+  // Game-by-game breakdown — use configured games + bonus questions
+  const typeLabel = { su: 'SU', ats: 'ATS', ou: 'O/U', bonus: 'Bonus' };
+  html += `<div class="games-section"><div style="font-size:0.65rem;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--orange);margin-bottom:12px;">Pick-by-Pick Breakdown</div>`;
 
-  games.forEach(g => {
-    const gamePicks = sheetPicks.filter(p => String(p.gameId) === String(g.id));
-    if (!gamePicks.length) return;
+  const allItems = [
+    ...weekConfig.games.map(g => ({ id: g.gameId, pickType: g.pickType, label: `${g.awayAbbr || g.awayTeam} @ ${g.homeAbbr || g.homeTeam}`, detail: g.pickType === 'ou' ? `Total: ${g.total}` : g.spreadDetail || '', espn: espnMap[g.gameId] })),
+    ...weekConfig.bonusQuestions.map(q => ({ id: q.questionId, pickType: 'bonus', label: q.questionText, detail: `${q.optionA} / ${q.optionB}`, espn: null })),
+  ];
 
-    const scoreStr = g.completed ? `${g.awayAbbr} ${g.awayScore} – ${g.homeAbbr} ${g.homeScore}` :
-                     g.state === 'in' ? `${g.awayAbbr} ${g.awayScore} – ${g.homeAbbr} ${g.homeScore}` :
-                     g.statusShort;
-    const scoreClass = g.completed ? '' : g.state === 'in' ? 'live' : 'upcoming';
+  // Fall back to unique gameIds from picks if no config
+  const configuredIds = new Set(allItems.map(i => i.id));
+  sheetPicks.forEach(p => {
+    if (!configuredIds.has(String(p.gameId))) {
+      const g = espnMap[p.gameId];
+      if (g) allItems.push({ id: p.gameId, pickType: p.pickType || 'ats', label: `${g.awayAbbr} @ ${g.homeAbbr}`, detail: '', espn: g });
+    }
+  });
+
+  allItems.forEach(item => {
+    const itemPicks = sheetPicks.filter(p => String(p.gameId) === String(item.id));
+    if (!itemPicks.length) return;
+
+    const g = item.espn;
+    let scoreStr = '', scoreClass = 'upcoming';
+    if (g?.completed) { scoreStr = `${g.awayAbbr} ${g.awayScore} – ${g.homeAbbr} ${g.homeScore}`; scoreClass = ''; }
+    else if (g?.state === 'in') { scoreStr = `${g.awayAbbr} ${g.awayScore} – ${g.homeAbbr} ${g.homeScore}`; scoreClass = 'live'; }
+    else if (item.pickType === 'bonus') { scoreStr = weekConfig.bonusQuestions.find(q => q.questionId === item.id)?.correctAnswer ? 'Result set' : 'Pending'; scoreClass = 'upcoming'; }
+    else { scoreStr = g?.statusShort || 'Upcoming'; }
 
     html += `<div class="game-row">
       <div class="game-row-header">
-        <span class="game-matchup">${g.awayAbbr} @ ${g.homeAbbr}<span class="game-spread-badge">${g.spreadDetail}</span></span>
+        <span class="game-matchup">${item.label}<span class="game-spread-badge"> · ${typeLabel[item.pickType] || ''}${item.detail ? ' · ' + item.detail : ''}</span></span>
         <span class="game-score ${scoreClass}">${scoreStr}</span>
       </div>
       <div class="picks-list">`;
 
-    gamePicks.forEach(p => {
-      const res = computeResult(p.pickedTeam, g);
-      const pts = res==='WIN'?`+${p.confidence}`:res==='LOSS'?`-${p.confidence}`:res==='PUSH'?'PUSH':g.state==='in'?'…':'—';
-      const chipClass = res==='WIN'?'win':res==='LOSS'?'loss':'';
-      const abbr = g.awayTeam===p.pickedTeam ? g.awayAbbr : g.homeAbbr;
+    itemPicks.forEach(p => {
+      const res = computeResult(p.pickedTeam, String(p.gameId), p.pickType || 'ats', espnMap);
+      const pts = res === 'WIN' ? `+${p.confidence}` : res === 'LOSS' ? `-${p.confidence}` : res === 'PUSH' ? 'PUSH' : g?.state === 'in' ? '…' : '—';
+      const chipClass = res === 'WIN' ? 'win' : res === 'LOSS' ? 'loss' : '';
       html += `<div class="pick-chip ${chipClass}">
         <span class="pick-chip-name">${p.username}</span>
-        <span class="pick-chip-team">${abbr} (${p.confidence})</span>
+        <span class="pick-chip-team">${p.pickedTeam} (${p.confidence})</span>
         <span class="pick-chip-pts">${pts}</span>
       </div>`;
     });
-
     html += `</div></div>`;
   });
 
@@ -279,7 +315,7 @@ function scheduleRefresh() {
   if (refreshTimer) clearTimeout(refreshTimer);
   refreshTimer = setTimeout(async () => {
     const [espnData, sheetPicks] = await Promise.all([
-      fetch(ESPN + `?week=${currentWeek}&season=${currentYear}&seasontype=2`).then(r => r.json()).catch(()=>({events:[]})),
+      fetch(ESPN + `?week=${currentWeek}&season=${currentYear}&seasontype=2`).then(r => r.json()).catch(() => ({ events: [] })),
       fetchPicks(currentWeek, currentYear),
     ]);
     render(espnData, sheetPicks);
@@ -288,8 +324,8 @@ function scheduleRefresh() {
   }, 60_000);
 }
 
-document.getElementById('prevWeekBtn').addEventListener('click', () => { if(refreshTimer) clearTimeout(refreshTimer); loadWeek(currentWeek-1, currentYear); });
-document.getElementById('nextWeekBtn').addEventListener('click', () => { if(refreshTimer) clearTimeout(refreshTimer); loadWeek(currentWeek+1, currentYear); });
+document.getElementById('prevWeekBtn').addEventListener('click', () => { if (refreshTimer) clearTimeout(refreshTimer); loadWeek(currentWeek - 1, currentYear); });
+document.getElementById('nextWeekBtn').addEventListener('click', () => { if (refreshTimer) clearTimeout(refreshTimer); loadWeek(currentWeek + 1, currentYear); });
 
 document.getElementById('hamburger').addEventListener('click', function(e) { e.stopPropagation(); document.getElementById('navDropdown').classList.toggle('open'); });
 document.addEventListener('click', () => document.getElementById('navDropdown').classList.remove('open'));

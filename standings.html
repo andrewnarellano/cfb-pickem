@@ -101,12 +101,14 @@
     <a href="picks.html" class="nav-btn">Picks</a>
     <a href="scoreboard.html" class="nav-btn">Scoreboard</a>
     <a href="standings.html" class="nav-btn active">Standings</a>
+    <a href="commissioner.html" class="nav-btn">Commissioner</a>
   </div>
   <button class="hamburger" id="hamburger" aria-label="Menu">&#9776;
     <div class="nav-dropdown" id="navDropdown">
       <a href="picks.html">Picks</a>
       <a href="scoreboard.html">Scoreboard</a>
       <a href="standings.html" class="active">Standings</a>
+      <a href="commissioner.html">Commissioner</a>
     </div>
   </button>
 </header>
@@ -129,56 +131,82 @@ async function init() {
       return;
     }
 
-    // Find all unique week+year combos
     const weeks = [...new Set(allPicks.map(p => `${p.year}_${p.week}`))].sort();
 
-    // Fetch ESPN scores for each week
-    const espnByWeek = {};
+    // Fetch ESPN scores and week configs for each week in parallel
+    const espnByWeek = {}, configByWeek = {};
     await Promise.all(weeks.map(async wk => {
       const [year, week] = wk.split('_');
       try {
-        const data = await fetch(`${ESPN}?week=${week}&season=${year}&seasontype=2`).then(r => r.json());
-        espnByWeek[wk] = parseGames(data.events || []);
-      } catch(e) { espnByWeek[wk] = []; }
+        const [espn, cfg] = await Promise.all([
+          fetch(`${ESPN}?week=${week}&season=${year}&seasontype=2`).then(r => r.json()),
+          fetch(`${GAS_URL}?action=getWeekConfig&week=${week}&year=${year}`).then(r => r.json()).catch(() => ({ games: [], bonusQuestions: [] })),
+        ]);
+        espnByWeek[wk]    = parseEspnGames(espn.events || []);
+        configByWeek[wk]  = { games: cfg.games || [], bonusQuestions: cfg.bonusQuestions || [] };
+      } catch(e) { espnByWeek[wk] = {}; configByWeek[wk] = { games: [], bonusQuestions: [] }; }
     }));
 
-    render(allPicks, weeks, espnByWeek);
+    render(allPicks, weeks, espnByWeek, configByWeek);
   } catch(e) {
     document.getElementById('content').innerHTML = '<div class="loading">Failed to load standings.</div>';
   }
 }
 
-function parseGames(events) {
-  return events.map(ev => {
+function parseEspnGames(events) {
+  const map = {};
+  events.forEach(ev => {
     const comp = ev.competitions[0];
     const home = comp.competitors.find(c => c.homeAway === 'home');
     const away = comp.competitors.find(c => c.homeAway === 'away');
-    const odds = comp.odds?.[0];
-    const st = comp.status?.type;
-    return {
+    const st   = comp.status?.type;
+    map[ev.id] = {
       id: ev.id, homeTeam: home.team.displayName, awayTeam: away.team.displayName,
-      homeScore: parseInt(home.score)||0, awayScore: parseInt(away.score)||0,
-      spread: odds?.spread ?? null, state: st?.state || 'pre', completed: st?.completed || false,
+      homeScore: parseInt(home.score) || 0, awayScore: parseInt(away.score) || 0,
+      state: st?.state || 'pre', completed: st?.completed || false,
     };
   });
+  return map;
 }
 
-function computeResult(pickedTeam, g) {
+function computeResult(pickedTeam, gameId, pickType, espnMap, cfg) {
+  if (pickType === 'bonus') {
+    const q = cfg.bonusQuestions.find(q => q.questionId === gameId);
+    if (!q?.correctAnswer) return null;
+    const correct = q.correctAnswer === 'A' ? q.optionA : q.optionB;
+    return pickedTeam === correct ? 'WIN' : 'LOSS';
+  }
+  const g = espnMap[gameId];
   if (!g || (!g.completed && g.state !== 'in')) return null;
-  if (g.spread === null) return null;
-  const cover = (g.homeScore - g.awayScore) + g.spread;
+
+  if (pickType === 'su') {
+    if (g.homeScore === g.awayScore) return 'PUSH';
+    return pickedTeam === (g.homeScore > g.awayScore ? g.homeTeam : g.awayTeam) ? 'WIN' : 'LOSS';
+  }
+  if (pickType === 'ou') {
+    const gameCfg = cfg.games.find(c => c.gameId === gameId);
+    const line    = parseFloat(gameCfg?.total);
+    if (!line) return null;
+    const actual = g.homeScore + g.awayScore;
+    if (Math.abs(actual - line) < 0.01) return 'PUSH';
+    return pickedTeam === 'Over' ? (actual > line ? 'WIN' : 'LOSS') : (actual < line ? 'WIN' : 'LOSS');
+  }
+  // ATS
+  const gameCfg = cfg.games.find(c => c.gameId === gameId);
+  const spread  = parseFloat(gameCfg?.spread);
+  if (isNaN(spread)) return null;
+  const cover = (g.homeScore - g.awayScore) + spread;
   if (Math.abs(cover) < 0.01) return 'PUSH';
   return pickedTeam === g.homeTeam ? (cover > 0 ? 'WIN' : 'LOSS') : (cover < 0 ? 'WIN' : 'LOSS');
 }
 
-function render(allPicks, weeks, espnByWeek) {
-  // Aggregate per user, per week
+function render(allPicks, weeks, espnByWeek, configByWeek) {
   const users = {};
   allPicks.forEach(p => {
-    const wk = `${p.year}_${p.week}`;
-    const games = espnByWeek[wk] || [];
-    const g = games.find(g => String(g.id) === String(p.gameId));
-    const res = computeResult(p.pickedTeam, g);
+    const wk  = `${p.year}_${p.week}`;
+    const espnMap = espnByWeek[wk] || {};
+    const cfg     = configByWeek[wk] || { games: [], bonusQuestions: [] };
+    const res = computeResult(p.pickedTeam, String(p.gameId), p.pickType || 'ats', espnMap, cfg);
     const pts = res==='WIN' ? parseInt(p.confidence) : res==='LOSS' ? -parseInt(p.confidence) : 0;
 
     if (!users[p.username]) users[p.username] = { totalPts:0, wins:0, losses:0, pushes:0, weeks:{} };

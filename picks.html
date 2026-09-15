@@ -10,16 +10,18 @@
     :root {
       --bg: #0f0505; --surface: #1c0a0a; --card: #240d0d;
       --border: rgba(255,255,255,0.08);
-      --orange: #500000; --orange-dim: rgba(80,0,0,0.3);
+      --maroon: #500000; --maroon-dim: rgba(80,0,0,0.3);
       --yellow: #FCE300;
-      --navy: #2F3E51;
+      --blue: #1e40af; --blue-dim: rgba(30,64,175,0.25);
+      --teal: #065f46; --teal-dim: rgba(6,95,70,0.25);
+      --purple: #581c87; --purple-dim: rgba(88,28,135,0.25);
       --green: #22c55e; --green-dim: rgba(34,197,94,0.12);
       --red: #ef4444; --red-dim: rgba(239,68,68,0.12);
       --text: #ffffff; --muted: rgba(214,211,196,0.75); --faint: rgba(214,211,196,0.3);
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html { background: var(--bg); -webkit-text-size-adjust: 100%; }
-    body { background: var(--bg); min-height: 100vh; font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif; color: var(--text); padding-left: env(safe-area-inset-left); padding-right: env(safe-area-inset-right); }
+    body { background: var(--bg); min-height: 100vh; font-family: 'Montserrat', sans-serif; color: var(--text); padding-left: env(safe-area-inset-left); padding-right: env(safe-area-inset-right); }
 
     header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 10; }
     .header-left h1 { font-size: 1.1rem; font-weight: 800; font-family: 'Sofia Sans Extra Condensed', sans-serif; letter-spacing: 0.5px; }
@@ -27,13 +29,13 @@
     .nav-buttons { display: flex; gap: 8px; }
     .nav-btn { background: transparent; color: var(--muted); border: 1px solid var(--border); padding: 7px 14px; border-radius: 6px; font-weight: 700; font-size: 0.8rem; cursor: pointer; text-decoration: none; display: inline-block; transition: all 0.15s; white-space: nowrap; }
     .nav-btn:hover { color: var(--text); border-color: rgba(255,255,255,0.2); }
-    .nav-btn.active { background: var(--orange); color: #fff; border-color: var(--orange); }
-    .hamburger { display: none; position: relative; font-size: 1.4rem; cursor: pointer; background: none; border: none; color: var(--orange); padding: 4px 8px; border-radius: 4px; line-height: 1; }
+    .nav-btn.active { background: var(--maroon); color: #fff; border-color: var(--maroon); }
+    .hamburger { display: none; position: relative; font-size: 1.4rem; cursor: pointer; background: none; border: none; color: var(--maroon); padding: 4px 8px; border-radius: 4px; line-height: 1; }
     .nav-dropdown { display: none; position: absolute; top: calc(100% + 10px); right: 0; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 8px 24px rgba(0,0,0,0.55); min-width: 170px; z-index: 100; overflow: hidden; }
     .nav-dropdown a { display: block; padding: 12px 16px; color: var(--text); text-decoration: none; font-weight: 600; font-size: 0.88rem; border-bottom: 1px solid var(--border); transition: background 0.12s; }
     .nav-dropdown a:last-child { border-bottom: none; }
     .nav-dropdown a:hover { background: rgba(255,255,255,0.06); }
-    .nav-dropdown a.active { color: var(--orange); }
+    .nav-dropdown a.active { color: var(--maroon); }
     .nav-dropdown.open { display: block; }
     @media (max-width: 700px) { .nav-buttons { display: none; } .hamburger { display: block; } header { padding: 12px 16px; } }
 
@@ -52,33 +54,61 @@
     .content { padding: 20px 20px 100px; max-width: 680px; margin: 0 auto; }
     .loading { text-align: center; padding: 60px 20px; color: var(--muted); font-size: 0.9rem; }
 
-    .game-card { background: var(--card); border-radius: 10px; margin-bottom: 16px; overflow: hidden; border: 1px solid var(--border); }
-    .game-header { background: rgba(0,0,0,0.25); padding: 8px 14px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); }
-    .game-time { font-size: 0.65rem; font-weight: 700; color: var(--muted); }
-    .game-status { font-size: 0.65rem; font-weight: 800; letter-spacing: 0.5px; }
+    .cat-header { display: flex; align-items: center; gap: 10px; margin: 24px 0 12px; }
+    .cat-header:first-child { margin-top: 0; }
+    .cat-label { font-size: 0.72rem; font-weight: 800; letter-spacing: 1.2px; text-transform: uppercase; font-family: 'Sofia Sans Extra Condensed', sans-serif; padding: 3px 10px; border-radius: 4px; }
+    .cat-label.su    { background: var(--blue-dim);   color: #93c5fd; }
+    .cat-label.ats   { background: var(--maroon-dim); color: var(--yellow); }
+    .cat-label.ou    { background: var(--teal-dim);   color: #6ee7b7; }
+    .cat-label.bonus { background: var(--purple-dim); color: #d8b4fe; }
+    .cat-divider { flex: 1; height: 1px; background: var(--border); }
+
+    .game-card { background: var(--card); border-radius: 10px; margin-bottom: 12px; overflow: hidden; border: 1px solid var(--border); }
+    .game-header { background: rgba(0,0,0,0.25); padding: 7px 14px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); }
+    .game-time { font-size: 0.62rem; font-weight: 700; color: var(--muted); }
+    .game-status { font-size: 0.62rem; font-weight: 800; letter-spacing: 0.5px; }
     .game-status.live { color: #ef4444; }
     .game-status.final { color: var(--muted); }
     .game-body { padding: 14px; }
 
     .pick-row { display: grid; grid-template-columns: 1fr auto 1fr; gap: 8px; align-items: center; margin-bottom: 10px; }
     .pick-btn { display: flex; flex-direction: column; align-items: center; padding: 12px 8px; border-radius: 8px; border: 1.5px solid var(--border); background: transparent; color: var(--text); cursor: pointer; transition: all 0.15s; gap: 4px; font-family: inherit; width: 100%; }
-    .pick-btn:not([disabled]):hover { border-color: rgba(249,115,22,0.5); background: var(--orange-dim); }
-    .pick-btn.selected { border-color: var(--orange); background: var(--orange-dim); }
-    .pick-btn.unselected { opacity: 0.38; }
+    .pick-btn:not([disabled]):hover { border-color: rgba(255,255,255,0.25); background: rgba(255,255,255,0.05); }
+    .pick-btn.selected-su  { border-color: #3b82f6; background: var(--blue-dim); }
+    .pick-btn.selected-ats { border-color: var(--maroon); background: var(--maroon-dim); }
+    .pick-btn.faded { opacity: 0.38; }
     .pick-btn[disabled] { cursor: default; }
-    .pick-btn.selected[disabled] { opacity: 0.8; }
     .btn-label { font-size: 0.58rem; font-weight: 700; letter-spacing: 0.5px; color: var(--muted); text-transform: uppercase; }
     .btn-team-name { font-size: 0.82rem; font-weight: 700; line-height: 1.3; text-align: center; }
-    .btn-spread { font-size: 0.8rem; font-weight: 800; color: var(--orange); }
-    .btn-spread.pk { color: var(--muted); }
+    .btn-spread { font-size: 0.8rem; font-weight: 800; color: var(--maroon); }
     .vs-badge { font-size: 0.65rem; font-weight: 800; color: var(--faint); letter-spacing: 1px; }
+
+    .ou-total-display { text-align: center; margin-bottom: 10px; font-size: 0.78rem; color: var(--muted); }
+    .ou-total-display strong { color: var(--text); font-size: 1rem; }
+    .ou-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+    .ou-btn { display: flex; flex-direction: column; align-items: center; padding: 14px 10px; border-radius: 8px; border: 1.5px solid var(--border); background: transparent; color: var(--text); cursor: pointer; transition: all 0.15s; gap: 4px; font-family: inherit; }
+    .ou-btn:not([disabled]):hover { background: rgba(6,95,70,0.15); border-color: rgba(52,211,153,0.3); }
+    .ou-btn.selected-ou { border-color: #34d399; background: var(--teal-dim); }
+    .ou-btn.faded { opacity: 0.38; }
+    .ou-btn[disabled] { cursor: default; }
+    .ou-btn-label { font-size: 0.6rem; font-weight: 800; letter-spacing: 0.7px; color: var(--muted); text-transform: uppercase; }
+    .ou-btn-text { font-size: 1rem; font-weight: 800; }
+
+    .bonus-card { background: var(--card); border-radius: 10px; margin-bottom: 12px; overflow: hidden; border: 1px solid var(--border); }
+    .bonus-question { padding: 14px 14px 10px; font-size: 0.88rem; font-weight: 700; line-height: 1.4; }
+    .bonus-opts { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 0 14px 14px; }
+    .bonus-btn { display: flex; align-items: center; justify-content: center; padding: 12px 8px; border-radius: 8px; border: 1.5px solid var(--border); background: transparent; color: var(--text); cursor: pointer; transition: all 0.15s; font-size: 0.82rem; font-weight: 700; text-align: center; font-family: inherit; line-height: 1.3; }
+    .bonus-btn:not([disabled]):hover { background: var(--purple-dim); border-color: rgba(167,139,250,0.4); }
+    .bonus-btn.selected-bonus { border-color: #a78bfa; background: var(--purple-dim); }
+    .bonus-btn.faded { opacity: 0.38; }
+    .bonus-btn[disabled] { cursor: default; }
 
     .score-row { display: grid; grid-template-columns: 1fr auto 1fr; gap: 8px; align-items: center; margin-bottom: 10px; }
     .score-side { display: flex; flex-direction: column; align-items: center; gap: 3px; }
     .score-team { font-size: 0.72rem; font-weight: 700; color: var(--muted); text-align: center; }
     .score-pts { font-size: 2rem; font-weight: 800; line-height: 1; }
     .score-pts.winner { color: var(--green); }
-    .score-sep { font-size: 0.7rem; color: var(--faint); font-weight: 800; padding: 0 4px; }
+    .score-sep { font-size: 0.7rem; color: var(--faint); font-weight: 800; }
     .score-spread { font-size: 0.62rem; color: var(--faint); text-align: center; }
 
     .confidence-row { display: none; flex-direction: column; gap: 8px; padding-top: 12px; border-top: 1px solid var(--border); margin-top: 4px; }
@@ -86,8 +116,8 @@
     .conf-label { font-size: 0.62rem; font-weight: 800; letter-spacing: 0.7px; color: var(--muted); text-transform: uppercase; }
     .conf-btns { display: flex; gap: 5px; }
     .conf-btn { flex: 1; height: 36px; border-radius: 6px; background: rgba(255,255,255,0.05); border: 1.5px solid var(--border); color: var(--text); font-size: 0.82rem; font-weight: 700; cursor: pointer; transition: all 0.15s; font-family: inherit; }
-    .conf-btn:hover:not([disabled]) { border-color: rgba(249,115,22,0.4); background: var(--orange-dim); }
-    .conf-btn.selected { background: var(--orange); border-color: var(--orange); color: #fff; }
+    .conf-btn:hover:not([disabled]) { border-color: rgba(255,255,255,0.25); background: rgba(255,255,255,0.1); }
+    .conf-btn.selected { background: var(--maroon); border-color: var(--maroon); color: #fff; }
     .conf-btn[disabled] { opacity: 0.3; cursor: default; }
 
     .game-footer { padding: 8px 14px; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
@@ -110,7 +140,7 @@
     .submit-bar { position: fixed; bottom: 0; left: 0; right: 0; background: var(--surface); border-top: 1px solid var(--border); padding: 12px 20px; padding-bottom: calc(12px + env(safe-area-inset-bottom)); display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 20; }
     .submit-info { font-size: 0.75rem; color: var(--muted); }
     .submit-info strong { color: var(--text); }
-    .submit-btn-main { background: var(--orange); color: #fff; border: none; padding: 11px 28px; border-radius: 7px; font-weight: 700; font-size: 0.88rem; cursor: pointer; white-space: nowrap; font-family: 'Spectral', serif; transition: background 0.15s; }
+    .submit-btn-main { background: var(--maroon); color: #fff; border: none; padding: 11px 28px; border-radius: 7px; font-weight: 700; font-size: 0.88rem; cursor: pointer; white-space: nowrap; font-family: 'Spectral', serif; transition: background 0.15s; }
     .submit-btn-main:hover:not([disabled]) { background: #6b0000; }
     .submit-btn-main[disabled] { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.3); cursor: not-allowed; }
 
@@ -122,15 +152,15 @@
     .modal-field { margin-bottom: 14px; }
     .modal-field label { display: block; font-size: 0.62rem; font-weight: 800; letter-spacing: 0.6px; color: var(--muted); margin-bottom: 6px; text-transform: uppercase; }
     .modal-field input { width: 100%; padding: 10px 11px; border-radius: 6px; background: rgba(255,255,255,0.07); border: 1px solid var(--border); color: var(--text); font-size: 0.92rem; font-weight: 600; outline: none; font-family: inherit; transition: border-color 0.15s; }
-    .modal-field input:focus { border-color: var(--orange); }
+    .modal-field input:focus { border-color: var(--maroon); }
     .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
     .modal-cancel { background: rgba(255,255,255,0.07); color: var(--text); border: none; padding: 9px 16px; border-radius: 6px; font-weight: 700; font-size: 0.82rem; cursor: pointer; font-family: inherit; }
-    .modal-confirm { background: var(--orange); color: #fff; border: none; padding: 9px 20px; border-radius: 6px; font-weight: 700; font-size: 0.82rem; cursor: pointer; font-family: 'Spectral', serif; }
+    .modal-confirm { background: var(--maroon); color: #fff; border: none; padding: 9px 20px; border-radius: 6px; font-weight: 700; font-size: 0.82rem; cursor: pointer; font-family: 'Spectral', serif; }
 
     @media (max-width: 500px) {
       .content { padding: 14px 12px 100px; }
       .week-bar, .user-bar { padding: 10px 14px; }
-      .btn-team-name { font-size: 0.75rem; }
+      .btn-team-name, .bonus-btn { font-size: 0.75rem; }
       .conf-btn { font-size: 0.75rem; }
     }
   </style>
@@ -140,18 +170,20 @@
 <header>
   <div class="header-left">
     <h1>CFB Pick'em</h1>
-    <div class="subtitle">Against the Spread · 2026 Season</div>
+    <div class="subtitle">2026 Season</div>
   </div>
   <div class="nav-buttons">
     <a href="picks.html" class="nav-btn active">Picks</a>
     <a href="scoreboard.html" class="nav-btn">Scoreboard</a>
     <a href="standings.html" class="nav-btn">Standings</a>
+    <a href="commissioner.html" class="nav-btn">Commissioner</a>
   </div>
   <button class="hamburger" id="hamburger" aria-label="Menu">&#9776;
     <div class="nav-dropdown" id="navDropdown">
       <a href="picks.html" class="active">Picks</a>
       <a href="scoreboard.html">Scoreboard</a>
       <a href="standings.html">Standings</a>
+      <a href="commissioner.html">Commissioner</a>
     </div>
   </button>
 </header>
@@ -198,10 +230,11 @@
 
 <script>
 const GAS_URL = 'https://script.google.com/macros/s/AKfycbxof2sk_1jM7YJLGbUALWdrcuROeP3YnxKA60WxU_QtTib9D_QMB9qiWYsfY0Mns26VYg/exec';
-const ESPN = 'http://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard';
+const ESPN    = 'http://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard';
 
 let currentWeek = 1, currentYear = 2026;
-let currentGames = [], sheetPicks = [];
+let configGames = [], bonusQuestions = [], espnGameMap = {};
+let sheetPicks = [];
 let picks = {};
 let userName = localStorage.getItem('cfb_username') || '';
 
@@ -210,215 +243,421 @@ else document.getElementById('userName').textContent = userName;
 
 loadWeek(null, null);
 
+// ── Load ──────────────────────────────────────────────────────────────────────
+
 async function loadWeek(week, year) {
   document.getElementById('content').innerHTML = '<div class="loading">Loading games...</div>';
   document.getElementById('submitBar').style.display = 'none';
   picks = {};
 
-  const params = week ? `?week=${week}&season=${year}&seasontype=2` : '';
+  const espnParams = week ? `?week=${week}&season=${year}&seasontype=2` : '';
   try {
-    const data = await fetch(ESPN + params).then(r => r.json());
-    currentWeek = data.week?.number || 1;
-    currentYear = data.season?.year || 2026;
+    const espnData = await fetch(ESPN + espnParams).then(r => r.json());
+    currentWeek = espnData.week?.number || 1;
+    currentYear = espnData.season?.year || 2026;
     document.getElementById('weekLabel').textContent = `WEEK ${currentWeek} · ${currentYear} SEASON`;
     document.getElementById('prevWeekBtn').disabled = currentWeek <= 1;
     document.getElementById('nextWeekBtn').disabled = false;
 
-    currentGames = parseGames(data.events || []);
+    espnGameMap = {};
+    (espnData.events || []).forEach(ev => {
+      const comp = ev.competitions[0];
+      const home = comp.competitors.find(c => c.homeAway === 'home');
+      const away = comp.competitors.find(c => c.homeAway === 'away');
+      const st   = comp.status?.type;
+      espnGameMap[ev.id] = {
+        id: ev.id, date: ev.date,
+        homeTeam: home.team.displayName, homeAbbr: home.team.abbreviation, homeScore: parseInt(home.score) || 0,
+        awayTeam: away.team.displayName, awayAbbr: away.team.abbreviation, awayScore: parseInt(away.score) || 0,
+        state: st?.state || 'pre', completed: st?.completed || false,
+        statusShort: st?.shortDetail || '',
+      };
+    });
+
+    const [cfg, sheetData] = await Promise.all([
+      fetch(`${GAS_URL}?action=getWeekConfig&week=${currentWeek}&year=${currentYear}`).then(r => r.json()).catch(() => ({ games: [], bonusQuestions: [] })),
+      fetch(`${GAS_URL}?action=getPicks&week=${currentWeek}&year=${currentYear}`).then(r => r.json()).catch(() => []),
+    ]);
+
+    configGames    = cfg.games || [];
+    bonusQuestions = cfg.bonusQuestions || [];
+    sheetPicks     = sheetData;
+
     restoreLocalPicks();
-    await loadSheetPicks();
-    renderGames();
+    render();
   } catch(e) {
     document.getElementById('content').innerHTML = '<div class="loading">Failed to load games.</div>';
   }
 }
 
-function parseGames(events) {
-  return events.map(ev => {
-    const comp = ev.competitions[0];
-    const home = comp.competitors.find(c => c.homeAway === 'home');
-    const away = comp.competitors.find(c => c.homeAway === 'away');
-    const odds = comp.odds?.[0];
-    const st = comp.status?.type;
-    return {
-      id: ev.id,
-      date: ev.date,
-      homeTeam: home.team.displayName,
-      homeAbbr: home.team.abbreviation,
-      homeScore: parseInt(home.score) || 0,
-      awayTeam: away.team.displayName,
-      awayAbbr: away.team.abbreviation,
-      awayScore: parseInt(away.score) || 0,
-      spreadDetail: odds?.details || null,
-      spread: odds?.spread ?? null,
-      state: st?.state || 'pre',
-      completed: st?.completed || false,
-      statusShort: st?.shortDetail || '',
-    };
-  }).filter(g => g.spreadDetail);
-}
+// ── Render ────────────────────────────────────────────────────────────────────
 
-function renderGames() {
+function render() {
   const content = document.getElementById('content');
-  if (!currentGames.length) {
-    content.innerHTML = '<div class="loading">No games with spreads found this week.</div>';
+  if (!configGames.length && !bonusQuestions.length) {
+    content.innerHTML = '<div class="loading">No games configured for this week yet.</div>';
     return;
   }
   content.innerHTML = '';
-  currentGames.forEach(g => {
-    const card = document.createElement('div');
-    card.className = 'game-card';
-    card.id = `game_${g.id}`;
-    card.innerHTML = buildCard(g);
-    content.appendChild(card);
-    wireCard(card, g);
-    applyLocalPick(card, g);
+
+  [
+    { key: 'su',  label: 'Straight Up' },
+    { key: 'ats', label: 'Against the Spread' },
+    { key: 'ou',  label: 'Over / Under' },
+  ].forEach(({ key, label }) => {
+    const games = configGames.filter(g => g.pickType === key);
+    if (!games.length) return;
+    content.appendChild(makeCatHeader(key, label));
+    games.forEach(cfg => {
+      const live = espnGameMap[cfg.gameId] || null;
+      const card = buildCard(cfg, live);
+      content.appendChild(card);
+      wireCard(card, cfg, live);
+      applyLocalPick(card, cfg.gameId);
+    });
   });
+
+  if (bonusQuestions.length) {
+    content.appendChild(makeCatHeader('bonus', 'Bonus'));
+    bonusQuestions.forEach(q => {
+      const card = buildBonusCard(q);
+      content.appendChild(card);
+      wireBonusCard(card, q);
+      applyLocalPick(card, q.questionId);
+    });
+  }
+
   document.getElementById('submitBar').style.display = 'flex';
   updateSubmitBar();
   renderAllPicks();
 }
 
-function spreadStr(val) {
-  if (val === null) return '';
-  if (val === 0) return 'PK';
-  return val > 0 ? `+${val}` : `${val}`;
+function makeCatHeader(key, label) {
+  const el = document.createElement('div');
+  el.className = 'cat-header';
+  el.innerHTML = `<span class="cat-label ${key}">${label}</span><div class="cat-divider"></div>`;
+  return el;
 }
 
-function buildCard(g) {
-  const kickoff = new Date(g.date);
-  const timeStr = kickoff.toLocaleString('en-US', { weekday:'short', month:'short', day:'numeric', hour:'numeric', minute:'2-digit', timeZoneName:'short' });
-  const homeSpread = g.spread;
-  const awaySpread = homeSpread !== null ? -homeSpread : null;
-  const locked = g.state !== 'pre';
+// ── Shared card footer / conf HTML ────────────────────────────────────────────
 
-  let body;
-  if (g.state === 'in' || g.completed) {
-    const hw = g.homeScore > g.awayScore, aw = g.awayScore > g.homeScore;
-    body = `<div class="score-row">
-      <div class="score-side">
-        <div class="score-team">${g.awayAbbr}</div>
-        <div class="score-pts${aw?' winner':''}">${g.awayScore}</div>
-        <div class="score-spread">${spreadStr(awaySpread)}</div>
-      </div>
-      <div class="score-sep">—</div>
-      <div class="score-side">
-        <div class="score-team">${g.homeAbbr}</div>
-        <div class="score-pts${hw?' winner':''}">${g.homeScore}</div>
-        <div class="score-spread">${spreadStr(homeSpread)}</div>
-      </div>
-    </div>`;
-  } else {
-    const aSp = spreadStr(awaySpread), hSp = spreadStr(homeSpread);
-    body = `<div class="pick-row">
-      <button class="pick-btn" id="pa_${g.id}" data-side="away" ${locked?'disabled':''}>
-        <span class="btn-label">Away</span>
-        <span class="btn-team-name">${g.awayTeam}</span>
-        <span class="btn-spread${aSp==='PK'?' pk':''}">${aSp}</span>
-      </button>
-      <span class="vs-badge">VS</span>
-      <button class="pick-btn" id="ph_${g.id}" data-side="home" ${locked?'disabled':''}>
-        <span class="btn-label">Home</span>
-        <span class="btn-team-name">${g.homeTeam}</span>
-        <span class="btn-spread${hSp==='PK'?' pk':''}">${hSp}</span>
-      </button>
+function confHTML(id, locked) {
+  return `<div class="confidence-row" id="conf_${id}">
+    <span class="conf-label">Confidence (1 low → 10 high)</span>
+    <div class="conf-btns">
+      ${[1,2,3,4,5,6,7,8,9,10].map(n => `<button class="conf-btn" data-conf="${n}" ${locked ? 'disabled' : ''}>${n}</button>`).join('')}
     </div>
-    <div class="confidence-row" id="conf_${g.id}">
-      <span class="conf-label">Confidence (1 low → 10 high)</span>
-      <div class="conf-btns">
-        ${[1,2,3,4,5,6,7,8,9,10].map(n=>`<button class="conf-btn" data-conf="${n}" ${locked?'disabled':''}>${n}</button>`).join('')}
-      </div>
-    </div>`;
-  }
+  </div>`;
+}
 
-  const lockTime = new Date(g.date).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',timeZoneName:'short'});
-  const statusText = g.state==='in'?'● LIVE':g.completed?'FINAL':'';
-  const statusClass = g.state==='in'?'live':g.completed?'final':'';
-
-  return `<div class="game-header">
-    <span class="game-time">${timeStr}</span>
-    <span class="game-status ${statusClass}">${statusText}</span>
+function cardFooterHTML(id, locked, lockTimeStr) {
+  return `<div class="game-footer">
+    <span class="deadline-text${locked ? ' closed' : ''}" id="dl_${id}">${locked ? 'Picks closed' : (lockTimeStr ? 'Closes ' + lockTimeStr : '')}</span>
+    <span class="pick-status-badge" id="badge_${id}"></span>
   </div>
-  <div class="game-body">${body}</div>
-  <div class="game-footer">
-    <span class="deadline-text${locked?' closed':''}" id="dl_${g.id}">${locked?'Picks closed':'Closes '+lockTime}</span>
-    <span class="pick-status-badge" id="badge_${g.id}"></span>
-  </div>
-  <div class="picks-table-wrap" id="pt_${g.id}">
+  <div class="picks-table-wrap" id="pt_${id}">
     <table class="picks-table">
       <thead><tr><th>Player</th><th>Pick</th><th>Conf</th><th>Pts</th></tr></thead>
-      <tbody id="ptb_${g.id}"></tbody>
+      <tbody id="ptb_${id}"></tbody>
     </table>
   </div>`;
 }
 
-function wireCard(card, g) {
-  if (g.state !== 'pre') return;
-  const pa = card.querySelector(`#pa_${g.id}`);
-  const ph = card.querySelector(`#ph_${g.id}`);
-  const confRow = card.querySelector(`#conf_${g.id}`);
+// ── SU / ATS card ─────────────────────────────────────────────────────────────
+
+function buildCard(cfg, live) {
+  if (cfg.pickType === 'ou') return buildOUCard(cfg, live);
+
+  const card = document.createElement('div');
+  card.className = 'game-card';
+  card.id = `game_${cfg.gameId}`;
+
+  const locked   = live ? live.state !== 'pre' : false;
+  const date     = live ? new Date(live.date) : null;
+  const timeStr  = date ? date.toLocaleString('en-US', { weekday:'short', month:'short', day:'numeric', hour:'numeric', minute:'2-digit', timeZoneName:'short' }) : '';
+  const lockTime = date ? date.toLocaleTimeString('en-US', { hour:'numeric', minute:'2-digit', timeZoneName:'short' }) : '';
+  const statusText = live?.state === 'in' ? '● LIVE' : live?.completed ? 'FINAL' : '';
+  const statusCls  = live?.state === 'in' ? 'live'  : live?.completed ? 'final' : '';
+  const isAts = cfg.pickType === 'ats';
+
+  let body;
+  if (live && (live.state === 'in' || live.completed)) {
+    const hw = live.homeScore > live.awayScore, aw = live.awayScore > live.homeScore;
+    const hSp = cfg.spread ? (cfg.spread > 0 ? `+${cfg.spread}` : `${cfg.spread}`) : '';
+    const aSp = cfg.spread ? (-cfg.spread > 0 ? `+${-cfg.spread}` : `${-cfg.spread}`) : '';
+    body = `<div class="score-row">
+      <div class="score-side">
+        <div class="score-team">${live.awayAbbr}</div>
+        <div class="score-pts${aw ? ' winner' : ''}">${live.awayScore}</div>
+        ${isAts ? `<div class="score-spread">${aSp}</div>` : ''}
+      </div>
+      <div class="score-sep">—</div>
+      <div class="score-side">
+        <div class="score-team">${live.homeAbbr}</div>
+        <div class="score-pts${hw ? ' winner' : ''}">${live.homeScore}</div>
+        ${isAts ? `<div class="score-spread">${hSp}</div>` : ''}
+      </div>
+    </div>`;
+  } else {
+    const aSp = isAts && cfg.spread ? (-cfg.spread > 0 ? `+${-cfg.spread}` : `${-cfg.spread}`) : '';
+    const hSp = isAts && cfg.spread ? (cfg.spread > 0 ? `+${cfg.spread}` : `${cfg.spread}`) : '';
+    body = `<div class="pick-row">
+      <button class="pick-btn" id="pa_${cfg.gameId}" ${locked ? 'disabled' : ''}>
+        <span class="btn-label">Away</span>
+        <span class="btn-team-name">${cfg.awayTeam}</span>
+        ${isAts && aSp ? `<span class="btn-spread">${aSp}</span>` : ''}
+      </button>
+      <span class="vs-badge">VS</span>
+      <button class="pick-btn" id="ph_${cfg.gameId}" ${locked ? 'disabled' : ''}>
+        <span class="btn-label">Home</span>
+        <span class="btn-team-name">${cfg.homeTeam}</span>
+        ${isAts && hSp ? `<span class="btn-spread">${hSp}</span>` : ''}
+      </button>
+    </div>
+    ${confHTML(cfg.gameId, locked)}`;
+  }
+
+  card.innerHTML = `
+    <div class="game-header">
+      <span class="game-time">${timeStr}</span>
+      <span class="game-status ${statusCls}">${statusText}</span>
+    </div>
+    <div class="game-body">${body}</div>
+    ${cardFooterHTML(cfg.gameId, locked, lockTime)}`;
+  return card;
+}
+
+function wireCard(card, cfg, live) {
+  if (cfg.pickType === 'ou') { wireOUCard(card, cfg, live); return; }
+  if (live && live.state !== 'pre') return;
+
+  const pa      = card.querySelector(`#pa_${cfg.gameId}`);
+  const ph      = card.querySelector(`#ph_${cfg.gameId}`);
+  const confRow = card.querySelector(`#conf_${cfg.gameId}`);
+  if (!pa || !ph) return;
+
+  const selClass = `selected-${cfg.pickType}`;
 
   function selectTeam(team) {
-    picks[g.id] = { ...(picks[g.id]||{}), team };
-    pa.classList.toggle('selected', team===g.awayTeam);
-    ph.classList.toggle('selected', team===g.homeTeam);
-    pa.classList.toggle('unselected', team!==g.awayTeam);
-    ph.classList.toggle('unselected', team!==g.homeTeam);
-    confRow.classList.add('visible');
-    updateBadge(g.id);
+    picks[cfg.gameId] = { ...(picks[cfg.gameId] || {}), team, pickType: cfg.pickType };
+    pa.classList.toggle(selClass, team === cfg.awayTeam);
+    pa.classList.toggle('faded',   team !== cfg.awayTeam);
+    ph.classList.toggle(selClass, team === cfg.homeTeam);
+    ph.classList.toggle('faded',   team !== cfg.homeTeam);
+    if (confRow) confRow.classList.add('visible');
+    updateBadge(cfg.gameId);
     updateSubmitBar();
   }
 
-  pa.addEventListener('click', () => selectTeam(g.awayTeam));
-  ph.addEventListener('click', () => selectTeam(g.homeTeam));
+  pa.addEventListener('click', () => selectTeam(cfg.awayTeam));
+  ph.addEventListener('click', () => selectTeam(cfg.homeTeam));
+  wireConfRow(card, cfg.gameId, cfg.pickType);
+  scheduleLock(cfg.gameId, live?.date);
+}
 
-  card.querySelectorAll('.conf-btn').forEach(btn => {
+// ── O/U card ──────────────────────────────────────────────────────────────────
+
+function buildOUCard(cfg, live) {
+  const card = document.createElement('div');
+  card.className = 'game-card';
+  card.id = `game_${cfg.gameId}`;
+
+  const locked   = live ? live.state !== 'pre' : false;
+  const date     = live ? new Date(live.date) : null;
+  const timeStr  = date ? date.toLocaleString('en-US', { weekday:'short', month:'short', day:'numeric', hour:'numeric', minute:'2-digit', timeZoneName:'short' }) : '';
+  const lockTime = date ? date.toLocaleTimeString('en-US', { hour:'numeric', minute:'2-digit', timeZoneName:'short' }) : '';
+  const statusText = live?.state === 'in' ? '● LIVE' : live?.completed ? 'FINAL' : '';
+  const statusCls  = live?.state === 'in' ? 'live'  : live?.completed ? 'final' : '';
+
+  let body;
+  if (live && (live.state === 'in' || live.completed)) {
+    const combined = live.homeScore + live.awayScore;
+    body = `<div class="ou-total-display">
+      <div style="font-size:0.7rem;color:var(--muted);margin-bottom:4px">${live.awayAbbr} ${live.awayScore} — ${live.homeAbbr} ${live.homeScore}</div>
+      Combined: <strong>${combined}</strong> · Line: <strong>${cfg.total || '—'}</strong>
+    </div>`;
+  } else {
+    body = `<div class="ou-total-display">${cfg.awayTeam} @ ${cfg.homeTeam}<br>Total: <strong>${cfg.total || '—'}</strong></div>
+    <div class="ou-row">
+      <button class="ou-btn" id="ou_over_${cfg.gameId}" ${locked ? 'disabled' : ''}>
+        <span class="ou-btn-label">Pick</span>
+        <span class="ou-btn-text">Over</span>
+        ${cfg.total ? `<span style="font-size:0.68rem;color:var(--muted)">${cfg.total}</span>` : ''}
+      </button>
+      <button class="ou-btn" id="ou_under_${cfg.gameId}" ${locked ? 'disabled' : ''}>
+        <span class="ou-btn-label">Pick</span>
+        <span class="ou-btn-text">Under</span>
+        ${cfg.total ? `<span style="font-size:0.68rem;color:var(--muted)">${cfg.total}</span>` : ''}
+      </button>
+    </div>
+    ${confHTML(cfg.gameId, locked)}`;
+  }
+
+  card.innerHTML = `
+    <div class="game-header">
+      <span class="game-time">${timeStr}</span>
+      <span class="game-status ${statusCls}">${statusText}</span>
+    </div>
+    <div class="game-body">${body}</div>
+    ${cardFooterHTML(cfg.gameId, locked, lockTime)}`;
+  return card;
+}
+
+function wireOUCard(card, cfg, live) {
+  if (live && live.state !== 'pre') return;
+  const overBtn  = card.querySelector(`#ou_over_${cfg.gameId}`);
+  const underBtn = card.querySelector(`#ou_under_${cfg.gameId}`);
+  const confRow  = card.querySelector(`#conf_${cfg.gameId}`);
+  if (!overBtn || !underBtn) return;
+
+  function selectOU(choice) {
+    picks[cfg.gameId] = { ...(picks[cfg.gameId] || {}), team: choice, pickType: 'ou' };
+    overBtn.classList.toggle('selected-ou', choice === 'Over');
+    overBtn.classList.toggle('faded',       choice !== 'Over');
+    underBtn.classList.toggle('selected-ou', choice === 'Under');
+    underBtn.classList.toggle('faded',       choice !== 'Under');
+    if (confRow) confRow.classList.add('visible');
+    updateBadge(cfg.gameId);
+    updateSubmitBar();
+  }
+
+  overBtn.addEventListener('click', () => selectOU('Over'));
+  underBtn.addEventListener('click', () => selectOU('Under'));
+  wireConfRow(card, cfg.gameId, 'ou');
+  scheduleLock(cfg.gameId, live?.date);
+}
+
+// ── Bonus card ────────────────────────────────────────────────────────────────
+
+function buildBonusCard(q) {
+  const card = document.createElement('div');
+  card.className = 'bonus-card';
+  card.id = `game_${q.questionId}`;
+  card.innerHTML = `
+    <div class="bonus-question">${q.questionText}</div>
+    <div class="bonus-opts">
+      <button class="bonus-btn" id="ba_${q.questionId}">${q.optionA}</button>
+      <button class="bonus-btn" id="bb_${q.questionId}">${q.optionB}</button>
+    </div>
+    <div style="padding:0 14px">
+      ${confHTML(q.questionId, false)}
+    </div>
+    <div class="game-footer">
+      <span></span>
+      <span class="pick-status-badge" id="badge_${q.questionId}"></span>
+    </div>
+    <div class="picks-table-wrap" id="pt_${q.questionId}">
+      <table class="picks-table">
+        <thead><tr><th>Player</th><th>Pick</th><th>Conf</th><th>Pts</th></tr></thead>
+        <tbody id="ptb_${q.questionId}"></tbody>
+      </table>
+    </div>`;
+  return card;
+}
+
+function wireBonusCard(card, q) {
+  const btnA    = card.querySelector(`#ba_${q.questionId}`);
+  const btnB    = card.querySelector(`#bb_${q.questionId}`);
+  const confRow = card.querySelector(`#conf_${q.questionId}`);
+
+  function selectOpt(opt) {
+    picks[q.questionId] = { ...(picks[q.questionId] || {}), team: opt, pickType: 'bonus' };
+    btnA.classList.toggle('selected-bonus', opt === q.optionA);
+    btnA.classList.toggle('faded',          opt !== q.optionA);
+    btnB.classList.toggle('selected-bonus', opt === q.optionB);
+    btnB.classList.toggle('faded',          opt !== q.optionB);
+    if (confRow) confRow.classList.add('visible');
+    updateBadge(q.questionId);
+    updateSubmitBar();
+  }
+
+  btnA.addEventListener('click', () => selectOpt(q.optionA));
+  btnB.addEventListener('click', () => selectOpt(q.optionB));
+  wireConfRow(card, q.questionId, 'bonus');
+}
+
+// ── Shared wiring ─────────────────────────────────────────────────────────────
+
+function wireConfRow(card, id, pickType) {
+  card.querySelectorAll(`#conf_${id} .conf-btn`).forEach(btn => {
     btn.addEventListener('click', () => {
-      const conf = parseInt(btn.dataset.conf);
-      picks[g.id] = { ...(picks[g.id]||{}), confidence: conf };
-      card.querySelectorAll('.conf-btn').forEach(b => b.classList.toggle('selected', b===btn));
-      updateBadge(g.id);
+      picks[id] = { ...(picks[id] || {}), confidence: parseInt(btn.dataset.conf), pickType };
+      card.querySelectorAll(`#conf_${id} .conf-btn`).forEach(b => b.classList.toggle('selected', b === btn));
+      updateBadge(id);
       updateSubmitBar();
     });
   });
+}
 
-  const lockMs = new Date(g.date).getTime();
-  const msLeft = lockMs - Date.now();
+function scheduleLock(id, dateStr) {
+  if (!dateStr) return;
+  const msLeft = new Date(dateStr).getTime() - Date.now();
   if (msLeft > 0 && msLeft < 86_400_000) {
     setTimeout(() => {
-      pa.disabled = ph.disabled = true;
-      card.querySelectorAll('.conf-btn').forEach(b => b.disabled = true);
-      const dl = document.getElementById(`dl_${g.id}`);
+      const card = document.getElementById(`game_${id}`);
+      if (!card) return;
+      card.querySelectorAll('button').forEach(b => b.disabled = true);
+      const dl = document.getElementById(`dl_${id}`);
       if (dl) { dl.textContent = 'Picks closed'; dl.classList.add('closed'); }
     }, msLeft);
   }
 }
 
-function applyLocalPick(card, g) {
-  const p = picks[g.id];
-  if (!p) return;
-  const pa = card.querySelector(`#pa_${g.id}`);
-  const ph = card.querySelector(`#ph_${g.id}`);
-  const confRow = card.querySelector(`#conf_${g.id}`);
-  if (pa && ph && p.team) {
-    pa.classList.toggle('selected', p.team===g.awayTeam);
-    ph.classList.toggle('selected', p.team===g.homeTeam);
-    pa.classList.toggle('unselected', p.team!==g.awayTeam);
-    ph.classList.toggle('unselected', p.team!==g.homeTeam);
-    if (confRow) confRow.classList.add('visible');
+// ── Apply saved picks to UI ───────────────────────────────────────────────────
+
+function applyLocalPick(card, id) {
+  const p = picks[id];
+  if (!p?.team) return;
+
+  if (p.pickType === 'bonus') {
+    const q    = bonusQuestions.find(q => q.questionId === id);
+    const btnA = card.querySelector(`#ba_${id}`);
+    const btnB = card.querySelector(`#bb_${id}`);
+    if (q && btnA && btnB) {
+      btnA.classList.toggle('selected-bonus', p.team === q.optionA);
+      btnA.classList.toggle('faded',          p.team !== q.optionA);
+      btnB.classList.toggle('selected-bonus', p.team === q.optionB);
+      btnB.classList.toggle('faded',          p.team !== q.optionB);
+      card.querySelector(`#conf_${id}`)?.classList.add('visible');
+    }
+  } else if (p.pickType === 'ou') {
+    const overBtn  = card.querySelector(`#ou_over_${id}`);
+    const underBtn = card.querySelector(`#ou_under_${id}`);
+    if (overBtn && underBtn) {
+      overBtn.classList.toggle('selected-ou', p.team === 'Over');
+      overBtn.classList.toggle('faded',       p.team !== 'Over');
+      underBtn.classList.toggle('selected-ou', p.team === 'Under');
+      underBtn.classList.toggle('faded',       p.team !== 'Under');
+      card.querySelector(`#conf_${id}`)?.classList.add('visible');
+    }
+  } else {
+    const cfg = configGames.find(g => g.gameId === id);
+    const pa  = card.querySelector(`#pa_${id}`);
+    const ph  = card.querySelector(`#ph_${id}`);
+    if (cfg && pa && ph) {
+      const selClass = `selected-${cfg.pickType}`;
+      pa.classList.toggle(selClass, p.team === cfg.awayTeam);
+      pa.classList.toggle('faded',   p.team !== cfg.awayTeam);
+      ph.classList.toggle(selClass, p.team === cfg.homeTeam);
+      ph.classList.toggle('faded',   p.team !== cfg.homeTeam);
+      card.querySelector(`#conf_${id}`)?.classList.add('visible');
+    }
   }
-  if (p.confidence && confRow) {
-    confRow.querySelectorAll('.conf-btn').forEach(b => b.classList.toggle('selected', parseInt(b.dataset.conf)===p.confidence));
+
+  if (p.confidence) {
+    card.querySelectorAll(`#conf_${id} .conf-btn`).forEach(b => b.classList.toggle('selected', parseInt(b.dataset.conf) === p.confidence));
   }
-  updateBadge(g.id);
+  updateBadge(id);
 }
 
-function updateBadge(gameId) {
-  const badge = document.getElementById(`badge_${gameId}`);
+// ── Badge / submit bar ────────────────────────────────────────────────────────
+
+function updateBadge(id) {
+  const badge = document.getElementById(`badge_${id}`);
   if (!badge) return;
-  const p = picks[gameId];
+  const p = picks[id];
   if (p?.team && p?.confidence) {
-    badge.textContent = `${p.team.split(' ').pop()} · ${p.confidence}`;
+    badge.textContent = `${p.team} · ${p.confidence}`;
     badge.className = 'pick-status-badge set';
   } else if (p?.team) {
     badge.textContent = 'Pick confidence';
@@ -428,79 +667,117 @@ function updateBadge(gameId) {
   }
 }
 
+function allPickableIds() {
+  const gameIds  = configGames.filter(g => !espnGameMap[g.gameId] || espnGameMap[g.gameId].state === 'pre').map(g => g.gameId);
+  const bonusIds = bonusQuestions.map(q => q.questionId);
+  return [...gameIds, ...bonusIds];
+}
+
 function updateSubmitBar() {
-  const pickable = currentGames.filter(g => g.state === 'pre');
-  const complete = pickable.filter(g => picks[g.id]?.team && picks[g.id]?.confidence);
+  const pickable = allPickableIds();
+  const complete = pickable.filter(id => picks[id]?.team && picks[id]?.confidence);
   document.getElementById('submitInfo').innerHTML = `<strong>${complete.length}</strong> of <strong>${pickable.length}</strong> picks set`;
   document.getElementById('submitBtn').disabled = complete.length === 0;
 }
 
-function computeResult(pickedTeam, g) {
-  if (!g.completed && g.state !== 'in') return null;
-  if (g.spread === null) return null;
-  const margin = g.homeScore - g.awayScore;
-  const cover = margin + g.spread;
+// ── Scoring ───────────────────────────────────────────────────────────────────
+
+function computeResult(pickedTeam, id, pickType) {
+  if (pickType === 'bonus') {
+    const q = bonusQuestions.find(q => q.questionId === id);
+    if (!q?.correctAnswer) return null;
+    const correctOpt = q.correctAnswer === 'A' ? q.optionA : q.optionB;
+    return pickedTeam === correctOpt ? 'WIN' : 'LOSS';
+  }
+
+  const live = espnGameMap[id];
+  if (!live || (!live.completed && live.state !== 'in')) return null;
+
+  if (pickType === 'ou') {
+    const cfg    = configGames.find(g => g.gameId === id);
+    const line   = parseFloat(cfg?.total);
+    if (!line) return null;
+    const actual = live.homeScore + live.awayScore;
+    if (Math.abs(actual - line) < 0.01) return 'PUSH';
+    return pickedTeam === 'Over' ? (actual > line ? 'WIN' : 'LOSS') : (actual < line ? 'WIN' : 'LOSS');
+  }
+
+  if (pickType === 'su') {
+    if (live.homeScore === live.awayScore) return 'PUSH';
+    const winner = live.homeScore > live.awayScore ? live.homeTeam : live.awayTeam;
+    return pickedTeam === winner ? 'WIN' : 'LOSS';
+  }
+
+  // ATS
+  const cfg = configGames.find(g => g.gameId === id);
+  const spread = parseFloat(cfg?.spread);
+  if (isNaN(spread)) return null;
+  const cover = (live.homeScore - live.awayScore) + spread;
   if (Math.abs(cover) < 0.01) return 'PUSH';
-  return pickedTeam === g.homeTeam ? (cover > 0 ? 'WIN' : 'LOSS') : (cover < 0 ? 'WIN' : 'LOSS');
+  return pickedTeam === live.homeTeam ? (cover > 0 ? 'WIN' : 'LOSS') : (cover < 0 ? 'WIN' : 'LOSS');
 }
 
 function renderAllPicks() {
-  currentGames.forEach(g => {
-    const gamePicks = sheetPicks.filter(p => String(p.gameId) === String(g.id));
-    const wrap = document.getElementById(`pt_${g.id}`);
-    const tbody = document.getElementById(`ptb_${g.id}`);
+  const allIds = [...configGames.map(g => g.gameId), ...bonusQuestions.map(q => q.questionId)];
+  allIds.forEach(id => {
+    const gamePicks = sheetPicks.filter(p => String(p.gameId) === String(id));
+    const wrap  = document.getElementById(`pt_${id}`);
+    const tbody = document.getElementById(`ptb_${id}`);
     if (!wrap || !tbody) return;
     if (!gamePicks.length) { wrap.classList.remove('visible'); return; }
     wrap.classList.add('visible');
     tbody.innerHTML = gamePicks.map(p => {
-      const res = computeResult(p.pickedTeam, g);
-      const pts = res==='WIN'?`+${p.confidence}`:res==='LOSS'?`-${p.confidence}`:res==='PUSH'?'0':g.state==='in'?'…':'—';
-      const cls = res==='WIN'?'result-win':res==='LOSS'?'result-loss':res==='PUSH'?'result-push':'';
+      const res = computeResult(p.pickedTeam, String(p.gameId), p.pickType || 'ats');
+      const pts = res === 'WIN' ? `+${p.confidence}` : res === 'LOSS' ? `-${p.confidence}` : res === 'PUSH' ? '0' : '—';
+      const cls = res === 'WIN' ? 'result-win' : res === 'LOSS' ? 'result-loss' : res === 'PUSH' ? 'result-push' : '';
       return `<tr><td>${p.username}</td><td>${p.pickedTeam}</td><td><span class="conf-pill">${p.confidence}</span></td><td class="${cls}">${pts}</td></tr>`;
     }).join('');
   });
 }
 
-async function loadSheetPicks() {
-  try {
-    const res = await fetch(`${GAS_URL}?action=getPicks&week=${currentWeek}&year=${currentYear}`);
-    sheetPicks = await res.json();
-  } catch(e) { sheetPicks = []; }
-}
+// ── Local storage ─────────────────────────────────────────────────────────────
 
 function restoreLocalPicks() {
   try {
-    const saved = JSON.parse(localStorage.getItem('cfb_picks')||'{}');
+    const saved = JSON.parse(localStorage.getItem('cfb_picks') || '{}');
     picks = saved?.[currentYear]?.[currentWeek] || {};
   } catch(e) { picks = {}; }
 }
 
 function saveLocalPicks() {
   try {
-    const saved = JSON.parse(localStorage.getItem('cfb_picks')||'{}');
+    const saved = JSON.parse(localStorage.getItem('cfb_picks') || '{}');
     if (!saved[currentYear]) saved[currentYear] = {};
     saved[currentYear][currentWeek] = picks;
     localStorage.setItem('cfb_picks', JSON.stringify(saved));
   } catch(e) {}
 }
 
+// ── Submit ────────────────────────────────────────────────────────────────────
+
 document.getElementById('submitBtn').addEventListener('click', async () => {
   if (!userName) { openNameModal(false); return; }
   const btn = document.getElementById('submitBtn');
-  const payload = Object.entries(picks)
-    .filter(([id,p]) => p.team && p.confidence)
-    .map(([id,p]) => {
-      const g = currentGames.find(g => g.id===id);
-      if (!g) return null;
-      return { gameId:id, awayTeam:g.awayTeam, homeTeam:g.homeTeam, spreadDetail:g.spreadDetail, spread:g.spread, pickedTeam:p.team, confidence:p.confidence };
-    }).filter(Boolean);
+
+  const payload = [];
+  configGames.forEach(cfg => {
+    const p = picks[cfg.gameId];
+    if (!p?.team || !p?.confidence) return;
+    payload.push({ gameId: cfg.gameId, awayTeam: cfg.awayTeam, homeTeam: cfg.homeTeam, spreadDetail: cfg.spreadDetail || '', spread: cfg.spread || '', pickedTeam: p.team, confidence: p.confidence, pickType: cfg.pickType });
+  });
+  bonusQuestions.forEach(q => {
+    const p = picks[q.questionId];
+    if (!p?.team || !p?.confidence) return;
+    payload.push({ gameId: q.questionId, awayTeam: '', homeTeam: '', spreadDetail: '', spread: '', pickedTeam: p.team, confidence: p.confidence, pickType: 'bonus' });
+  });
+
   if (!payload.length) return;
   btn.disabled = true; btn.textContent = 'Submitting...';
   saveLocalPicks();
   try {
-    await fetch(GAS_URL, { method:'POST', body: JSON.stringify({ action:'submitPicks', username:userName, week:currentWeek, year:currentYear, picks:payload }) });
+    await fetch(GAS_URL, { method: 'POST', body: JSON.stringify({ action: 'submitPicks', username: userName, week: currentWeek, year: currentYear, picks: payload }) });
     btn.textContent = 'Submitted!';
-    await loadSheetPicks();
+    sheetPicks = await fetch(`${GAS_URL}?action=getPicks&week=${currentWeek}&year=${currentYear}`).then(r => r.json()).catch(() => []);
     renderAllPicks();
     setTimeout(() => { btn.textContent = 'Submit Picks'; updateSubmitBar(); }, 2500);
   } catch(e) {
@@ -509,22 +786,23 @@ document.getElementById('submitBtn').addEventListener('click', async () => {
   }
 });
 
-document.getElementById('prevWeekBtn').addEventListener('click', () => loadWeek(currentWeek-1, currentYear));
-document.getElementById('nextWeekBtn').addEventListener('click', () => loadWeek(currentWeek+1, currentYear));
+document.getElementById('prevWeekBtn').addEventListener('click', () => loadWeek(currentWeek - 1, currentYear));
+document.getElementById('nextWeekBtn').addEventListener('click', () => loadWeek(currentWeek + 1, currentYear));
 
+// ── Name modal ────────────────────────────────────────────────────────────────
 let nameForced = false;
 function openNameModal(forced) {
   nameForced = forced;
   document.getElementById('modalFirst').value = '';
-  document.getElementById('modalLast').value = '';
+  document.getElementById('modalLast').value  = '';
   document.getElementById('modalOverlay').classList.add('open');
   setTimeout(() => document.getElementById('modalFirst').focus(), 80);
 }
 function confirmName() {
   const first = document.getElementById('modalFirst').value.trim();
-  const last = document.getElementById('modalLast').value.trim().toUpperCase();
+  const last  = document.getElementById('modalLast').value.trim().toUpperCase();
   if (!first) { alert('Enter your first name.'); return; }
-  if (!last) { alert('Enter your last initial.'); return; }
+  if (!last)  { alert('Enter your last initial.'); return; }
   userName = `${first} ${last}.`;
   localStorage.setItem('cfb_username', userName);
   document.getElementById('userName').textContent = userName;
@@ -534,8 +812,8 @@ function confirmName() {
 document.getElementById('modalConfirm').addEventListener('click', confirmName);
 document.getElementById('modalCancel').addEventListener('click', () => { if (!nameForced) document.getElementById('modalOverlay').classList.remove('open'); });
 document.getElementById('userChangeBtn').addEventListener('click', () => openNameModal(false));
-document.getElementById('modalFirst').addEventListener('keydown', e => { if (e.key==='Enter') document.getElementById('modalLast').focus(); });
-document.getElementById('modalLast').addEventListener('keydown', e => { if (e.key==='Enter') confirmName(); });
+document.getElementById('modalFirst').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('modalLast').focus(); });
+document.getElementById('modalLast').addEventListener('keydown', e => { if (e.key === 'Enter') confirmName(); });
 
 document.getElementById('hamburger').addEventListener('click', function(e) { e.stopPropagation(); document.getElementById('navDropdown').classList.toggle('open'); });
 document.addEventListener('click', () => document.getElementById('navDropdown').classList.remove('open'));

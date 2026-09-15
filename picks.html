@@ -218,8 +218,8 @@
       <input type="text" id="modalFirst" placeholder="e.g. John" maxlength="20" autocomplete="off">
     </div>
     <div class="modal-field">
-      <label>Last Initial</label>
-      <input type="text" id="modalLast" placeholder="e.g. D" maxlength="1" autocomplete="off">
+      <label>Last Name</label>
+      <input type="text" id="modalLast" placeholder="e.g. Andres" maxlength="30" autocomplete="off">
     </div>
     <div class="modal-actions">
       <button class="modal-cancel" id="modalCancel">Cancel</button>
@@ -806,8 +806,8 @@ function confirmName() {
   const first = document.getElementById('modalFirst').value.trim();
   const last  = document.getElementById('modalLast').value.trim().toUpperCase();
   if (!first) { alert('Enter your first name.'); return; }
-  if (!last)  { alert('Enter your last initial.'); return; }
-  userName = `${first} ${last}.`;
+  if (!last)  { alert('Enter your last name.'); return; }
+  userName = `${first} ${last}`;
   localStorage.setItem('cfb_username', userName);
   document.getElementById('userName').textContent = userName;
   document.getElementById('modalOverlay').classList.remove('open');

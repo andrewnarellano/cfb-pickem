@@ -622,16 +622,29 @@ async function saveConfig() {
   }));
 
   try {
+    // 1. Save config
     const res = await fetch(GAS_URL, { method: 'POST', body: JSON.stringify({ action: 'saveWeekConfig', password, week: currentWeek, year: currentYear, games, bonusQuestions }) }).then(r => r.json());
     if (res.error) throw new Error(res.error);
-    msg.textContent = 'Config saved successfully!';
+
+    // 2. Generate score sheet
+    msg.textContent = 'Config saved! Generating scoresheet...';
     msg.className = 'status-msg success';
+    btn.textContent = 'Generating...';
+
+    const sheetRes = await fetch(GAS_URL, { method: 'POST', body: JSON.stringify({ action: 'generateScoreSheet', password, week: currentWeek, year: currentYear }) }).then(r => r.json());
+
     const cfg = await fetch(`${GAS_URL}?action=getWeekConfig&week=${currentWeek}&year=${currentYear}`).then(r => r.json());
     renderBonusResults(cfg.bonusQuestions || []);
+
+    if (sheetRes.error) {
+      msg.textContent = `Config saved! (Sheet error: ${sheetRes.error})`;
+    } else {
+      msg.textContent = `Done! Scoresheet "${sheetRes.sheetName}" created. Loading picks page...`;
+      setTimeout(() => { window.location.href = `picks.html?week=${currentWeek}&year=${currentYear}`; }, 2000);
+    }
   } catch(e) {
     msg.textContent = e.message || 'Save failed.';
     msg.className = 'status-msg error';
-  } finally {
     btn.disabled = false; btn.textContent = 'Complete';
   }
 }

@@ -430,9 +430,11 @@ function renderEspnList() {
         <div class="game-row-time">${g.kickoffStr}</div>
         <div class="game-row-lines">
           ${spreadHtml}${ouHtml}
-          <button class="assign-btn su${assigned?.pickType==='su'?' active':''}" onclick="assignGame('${g.id}','su')">SU</button>
-          <button class="assign-btn ats${assigned?.pickType==='ats'?' active':''}" onclick="assignGame('${g.id}','ats')">ATS</button>
-          <button class="assign-btn ou${assigned?.pickType==='ou'?' active':''}" onclick="assignGame('${g.id}','ou')">O/U</button>
+          <div style="margin-left:auto;display:flex;gap:3px">
+            <button class="assign-btn su${assigned?.pickType==='su'?' active':''}" onclick="assignGame('${g.id}','su')">SU</button>
+            <button class="assign-btn ats${assigned?.pickType==='ats'?' active':''}" onclick="assignGame('${g.id}','ats')">ATS</button>
+            <button class="assign-btn ou${assigned?.pickType==='ou'?' active':''}" onclick="assignGame('${g.id}','ou')">O/U</button>
+          </div>
         </div>
       </div>
     </div>`;

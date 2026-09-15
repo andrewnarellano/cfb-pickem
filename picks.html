@@ -728,7 +728,8 @@ function renderAllPicks() {
     wrap.classList.add('visible');
     tbody.innerHTML = gamePicks.map(p => {
       const res = computeResult(p.pickedTeam, String(p.gameId), p.pickType || 'ats');
-      const pts = res === 'WIN' ? `+${p.confidence}` : res === 'LOSS' ? `-${p.confidence}` : res === 'PUSH' ? '0' : '—';
+      const canLoseDisp = (p.pickType || 'ats') === 'ats' || p.pickType === 'ou';
+      const pts = res === 'WIN' ? `+${p.confidence}` : res === 'LOSS' ? (canLoseDisp ? `-${p.confidence}` : '0') : res === 'PUSH' ? '0' : '—';
       const cls = res === 'WIN' ? 'result-win' : res === 'LOSS' ? 'result-loss' : res === 'PUSH' ? 'result-push' : '';
       return `<tr><td>${p.username}</td><td>${p.pickedTeam}</td><td><span class="conf-pill">${p.confidence}</span></td><td class="${cls}">${pts}</td></tr>`;
     }).join('');

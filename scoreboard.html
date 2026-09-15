@@ -298,7 +298,8 @@ function render(espnData, sheetPicks) {
 
     itemPicks.forEach(p => {
       const res = computeResult(p.pickedTeam, String(p.gameId), p.pickType || 'ats', espnMap);
-      const pts = res === 'WIN' ? `+${p.confidence}` : res === 'LOSS' ? `-${p.confidence}` : res === 'PUSH' ? 'PUSH' : g?.state === 'in' ? '…' : '—';
+      const canLoseDisp = p.pickType === 'ats' || p.pickType === 'ou';
+      const pts = res === 'WIN' ? `+${p.confidence}` : res === 'LOSS' ? (canLoseDisp ? `-${p.confidence}` : '0') : res === 'PUSH' ? 'PUSH' : g?.state === 'in' ? '…' : '—';
       const chipClass = res === 'WIN' ? 'win' : res === 'LOSS' ? 'loss' : '';
       html += `<div class="pick-chip ${chipClass}">
         <span class="pick-chip-name">${p.username}</span>

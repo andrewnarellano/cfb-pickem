@@ -237,6 +237,7 @@ let configGames = [], bonusQuestions = [], espnGameMap = {};
 let sheetPicks = [];
 let picks = {};
 let userName = localStorage.getItem('cfb_username') || '';
+let nameForced = false;
 
 if (!userName) openNameModal(true);
 else document.getElementById('userName').textContent = userName;
@@ -794,7 +795,6 @@ document.getElementById('prevWeekBtn').addEventListener('click', () => loadWeek(
 document.getElementById('nextWeekBtn').addEventListener('click', () => loadWeek(currentWeek + 1, currentYear));
 
 // ── Name modal ────────────────────────────────────────────────────────────────
-let nameForced = false;
 function openNameModal(forced) {
   nameForced = forced;
   document.getElementById('modalFirst').value = '';

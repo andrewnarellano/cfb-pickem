@@ -71,9 +71,13 @@
 
     /* ── Left: game column ── */
     .game-column { position: sticky; top: 107px; height: calc(100vh - 107px); overflow-y: auto; border-right: 1px solid var(--border); min-width: 0; }
-    .game-col-header { position: sticky; top: 0; background: var(--surface); border-bottom: 1px solid var(--border); padding: 10px 14px; display: flex; align-items: center; justify-content: space-between; z-index: 5; }
+    .game-col-header { position: sticky; top: 0; background: var(--surface); border-bottom: 1px solid var(--border); padding: 10px 14px; z-index: 5; }
+    .game-col-header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
     .game-col-title { font-size: 0.68rem; font-weight: 800; letter-spacing: 0.8px; text-transform: uppercase; color: var(--yellow); font-family: 'Sofia Sans Extra Condensed', sans-serif; }
     .game-col-meta { font-size: 0.62rem; color: var(--muted); }
+    .game-search { width: 100%; padding: 7px 10px; border-radius: 6px; background: rgba(255,255,255,0.07); border: 1px solid var(--border); color: var(--text); font-size: 0.8rem; font-weight: 500; outline: none; font-family: inherit; transition: border-color 0.15s; }
+    .game-search:focus { border-color: var(--maroon); }
+    .game-search::placeholder { color: var(--faint); }
 
     .game-row { padding: 10px 14px; border-bottom: 1px solid rgba(255,255,255,0.04); display: flex; align-items: flex-start; gap: 10px; transition: background 0.1s; }
     .game-row:last-child { border-bottom: none; }
@@ -202,13 +206,16 @@
     <!-- LEFT: All FBS games -->
     <div class="game-column">
       <div class="game-col-header">
-        <span class="game-col-title">All FBS Games</span>
-        <div style="display:flex;align-items:center;gap:10px">
-          <span class="game-col-meta" id="gameColCount"></span>
-          <button class="btn btn-secondary btn-xs" onclick="loadEspn()">Refresh</button>
+        <div class="game-col-header-top">
+          <span class="game-col-title">All FBS Games</span>
+          <div style="display:flex;align-items:center;gap:10px">
+            <span class="game-col-meta" id="gameColCount"></span>
+            <button class="btn btn-secondary btn-xs" onclick="loadEspn()">Refresh</button>
+          </div>
         </div>
+        <input type="text" class="game-search" id="gameSearch" placeholder="Search teams..." oninput="filterGames(this.value)">
       </div>
-      <div id="espnList"><div class="loading">Loading...</div></div>
+      <div id="espnList" style="padding-bottom:68px"><div class="loading">Loading...</div></div>
     </div>
 
     <!-- RIGHT: Contest builder -->
@@ -300,7 +307,7 @@ const ESPN    = 'https://site.api.espn.com/apis/site/v2/sports/football/college-
 
 let password = '';
 let currentWeek = null, currentYear = 2026;
-let espnGames = [];
+let espnGames = [], searchTerm = '';
 let selectedGames = {}; // gameId → { game, pickType, total }
 let bonusQuestions = [];
 let bonusResults = {};
@@ -415,11 +422,26 @@ function parseEspnGames(events) {
   });
 }
 
+function filterGames(val) {
+  searchTerm = val.toLowerCase().trim();
+  renderEspnList();
+}
+
 function renderEspnList() {
   const list = document.getElementById('espnList');
   if (!espnGames.length) { list.innerHTML = '<div class="loading">No games found for this week.</div>'; return; }
 
-  list.innerHTML = espnGames.map(g => {
+  const visible = searchTerm
+    ? espnGames.filter(g =>
+        g.awayTeam.toLowerCase().includes(searchTerm) ||
+        g.homeTeam.toLowerCase().includes(searchTerm) ||
+        g.awayAbbr.toLowerCase().includes(searchTerm) ||
+        g.homeAbbr.toLowerCase().includes(searchTerm))
+    : espnGames;
+
+  if (!visible.length) { list.innerHTML = '<div class="loading">No games match your search.</div>'; return; }
+
+  list.innerHTML = visible.map(g => {
     const assigned = selectedGames[g.id];
     const spreadHtml = g.spreadDetail ? `<span class="line-tag line-spread">${g.spreadDetail}</span>` : '';
     const ouHtml = g.overUnder != null ? `<span class="line-tag line-ou">O/U ${g.overUnder}</span>` : '';

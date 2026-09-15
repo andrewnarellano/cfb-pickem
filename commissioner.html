@@ -639,9 +639,9 @@ async function saveConfig() {
     if (sheetRes.error) {
       msg.textContent = `Config saved! (Sheet error: ${sheetRes.error})`;
     } else {
-      msg.textContent = `Done! Scoresheet "${sheetRes.sheetName}" created. Loading picks page...`;
-      setTimeout(() => { window.location.href = `picks.html?week=${currentWeek}&year=${currentYear}`; }, 2000);
+      msg.textContent = `Done! Scoresheet "${sheetRes.sheetName}" created.`;
     }
+    btn.disabled = false; btn.textContent = 'Complete';
   } catch(e) {
     msg.textContent = e.message || 'Save failed.';
     msg.className = 'status-msg error';

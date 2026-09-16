@@ -12,7 +12,7 @@ const PLAYERS = [
 ];
 
 const PICKS_HEADERS  = ['Timestamp','Year','Week','Username','GameId','AwayTeam','HomeTeam','SpreadDetail','Spread','PickedTeam','Confidence','PickType'];
-const CONFIG_HEADERS = ['Year','Week','GameId','AwayTeam','HomeTeam','PickType','SpreadDetail','Spread','Total','DisplayOrder'];
+const CONFIG_HEADERS = ['Year','Week','GameId','AwayTeam','HomeTeam','PickType','SpreadDetail','Spread','Total','DisplayOrder','GameDate'];
 const BONUS_HEADERS  = ['Year','Week','QuestionId','QuestionText','OptionA','OptionB','CorrectAnswer'];
 
 // Sheet colors
@@ -75,6 +75,7 @@ function getWeekConfig(week, year) {
       year: r[0], week: r[1], gameId: r[2],
       awayTeam: r[3], homeTeam: r[4], pickType: r[5],
       spreadDetail: r[6], spread: r[7], total: r[8], displayOrder: r[9],
+      gameDate: r[10] || '',
     }));
 
   const bonusRows = bonusSheet.getDataRange().getValues().slice(1)
@@ -99,7 +100,7 @@ function saveWeekConfig(data) {
   deleteRowsWhere(bonusSheet,  r => String(r[0]) === String(year) && String(r[1]) === String(week));
 
   (games || []).forEach((g, i) => {
-    configSheet.appendRow([year, week, g.gameId, g.awayTeam, g.homeTeam, g.pickType, g.spreadDetail || '', g.spread || '', g.total || '', i]);
+    configSheet.appendRow([year, week, g.gameId, g.awayTeam, g.homeTeam, g.pickType, g.spreadDetail || '', g.spread || '', g.total || '', i, g.gameDate || '']);
   });
 
   (bonusQuestions || []).forEach((q, i) => {

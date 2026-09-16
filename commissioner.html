@@ -428,6 +428,7 @@ function parseEspnGames(events) {
       spread: odds?.spread ?? null,
       overUnder: odds?.overUnder ?? null,
       kickoffStr: kickoff.toLocaleString('en-US', { weekday:'short', month:'short', day:'numeric', hour:'numeric', minute:'2-digit', timeZoneName:'short' }),
+      date: ev.date,
     };
   });
 }
@@ -619,6 +620,7 @@ async function saveConfig() {
     gameId: g.id, awayTeam: g.awayTeam, homeTeam: g.homeTeam,
     pickType, spreadDetail: g.spreadDetail || '', spread: g.spread || '',
     total: pickType === 'ou' ? (total || '') : '',
+    gameDate: g.date || '',
   }));
 
   try {

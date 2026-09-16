@@ -415,7 +415,7 @@ function buildCard(cfg, live) {
   card.id = `game_${cfg.gameId}`;
 
   const locked   = (lockAt !== null && Date.now() >= lockAt) || (live ? live.state !== 'pre' : false);
-  const date     = live ? new Date(live.date) : null;
+  const date     = live ? new Date(live.date) : (cfg.gameDate ? new Date(cfg.gameDate) : null);
   const timeStr  = date ? date.toLocaleString('en-US', { weekday:'short', month:'short', day:'numeric', hour:'numeric', minute:'2-digit', timeZoneName:'short' }) : '';
   const lockTime = lockAt ? new Date(lockAt).toLocaleTimeString('en-US', { hour:'numeric', minute:'2-digit', timeZoneName:'short' }) : (date ? date.toLocaleTimeString('en-US', { hour:'numeric', minute:'2-digit', timeZoneName:'short' }) : '');
   const statusText = live?.state === 'in' ? '● LIVE' : live?.completed ? 'FINAL' : '';
@@ -508,7 +508,7 @@ function buildOUCard(cfg, live) {
   card.id = `game_${cfg.gameId}`;
 
   const locked   = (lockAt !== null && Date.now() >= lockAt) || (live ? live.state !== 'pre' : false);
-  const date     = live ? new Date(live.date) : null;
+  const date     = live ? new Date(live.date) : (cfg.gameDate ? new Date(cfg.gameDate) : null);
   const timeStr  = date ? date.toLocaleString('en-US', { weekday:'short', month:'short', day:'numeric', hour:'numeric', minute:'2-digit', timeZoneName:'short' }) : '';
   const lockTime = lockAt ? new Date(lockAt).toLocaleTimeString('en-US', { hour:'numeric', minute:'2-digit', timeZoneName:'short' }) : (date ? date.toLocaleTimeString('en-US', { hour:'numeric', minute:'2-digit', timeZoneName:'short' }) : '');
   const statusText = live?.state === 'in' ? '● LIVE' : live?.completed ? 'FINAL' : '';

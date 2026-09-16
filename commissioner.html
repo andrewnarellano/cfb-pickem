@@ -687,8 +687,12 @@ function loadProgress(week, year) {
   if (!raw) return;
   try {
     const state = JSON.parse(raw);
-    if (state.selectedGames) selectedGames = state.selectedGames;
-    if (state.bonusQuestions) bonusQuestions = state.bonusQuestions;
+    if (state.selectedGames) {
+      Object.keys(state.selectedGames).forEach(k => {
+        if (!selectedGames[k]) selectedGames[k] = state.selectedGames[k];
+      });
+    }
+    if (state.bonusQuestions && !bonusQuestions.length) bonusQuestions = state.bonusQuestions;
     renderSections();
     renderBonusList();
     updateSaveBar();

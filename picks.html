@@ -82,7 +82,7 @@
     .pick-btn[disabled] { cursor: default; }
     .btn-label { font-size: 0.58rem; font-weight: 700; letter-spacing: 0.5px; color: var(--muted); text-transform: uppercase; }
     .btn-team-name { font-size: 0.82rem; font-weight: 700; line-height: 1.3; text-align: center; }
-    .btn-spread { font-size: 0.8rem; font-weight: 800; color: var(--maroon); }
+    .btn-spread { font-size: 0.8rem; font-weight: 800; color: var(--yellow); }
     .vs-badge { font-size: 0.65rem; font-weight: 800; color: var(--faint); letter-spacing: 1px; }
 
     .ou-total-display { text-align: center; margin-bottom: 10px; font-size: 0.78rem; color: var(--muted); }
@@ -162,8 +162,8 @@
     .modal-cancel { background: rgba(255,255,255,0.07); color: var(--text); border: none; padding: 9px 16px; border-radius: 6px; font-weight: 700; font-size: 0.82rem; cursor: pointer; font-family: inherit; }
     .modal-confirm { background: var(--maroon); color: #fff; border: none; padding: 9px 20px; border-radius: 6px; font-weight: 700; font-size: 0.82rem; cursor: pointer; font-family: 'Spectral', serif; }
 
-    .lock-banner { padding: 9px 24px; background: rgba(252,227,0,0.08); border-bottom: 1px solid rgba(252,227,0,0.18); font-size: 0.82rem; font-weight: 700; color: var(--yellow); text-align: center; letter-spacing: 0.4px; }
-    .lock-banner.closed { background: rgba(239,68,68,0.08); border-bottom-color: rgba(239,68,68,0.2); color: var(--red); }
+    .lock-banner { padding: 9px 24px; background: #2d2200; border-bottom: 1px solid rgba(252,227,0,0.35); font-size: 0.82rem; font-weight: 700; color: var(--yellow); text-align: center; letter-spacing: 0.4px; }
+    .lock-banner.closed { background: #2d0000; border-bottom-color: rgba(239,68,68,0.35); color: var(--red); }
     .game-venue { font-size: 0.6rem; color: var(--faint); margin-top: 2px; }
 
     @media (max-width: 500px) {
@@ -249,7 +249,7 @@ const GAS_URL = 'https://script.google.com/macros/s/AKfycbxof2sk_1jM7YJLGbUALWdr
 const ESPN    = 'https://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard';
 
 let currentWeek = 1, currentYear = 2026;
-let configGames = [], bonusQuestions = [], espnGameMap = {};
+let configGames = [], bonusQuestions = [], espnGameMap = {}, espnByHome = {};
 let sheetPicks = [];
 let picks = {};
 let lockAt = null;
@@ -281,7 +281,7 @@ async function loadWeek(week, year) {
     document.getElementById('prevWeekBtn').disabled = currentWeek <= 1;
     document.getElementById('nextWeekBtn').disabled = false;
 
-    espnGameMap = {};
+    espnGameMap = {}; espnByHome = {};
     (espnData.events || []).forEach(ev => {
       const comp = ev.competitions[0];
       const home = comp.competitors.find(c => c.homeAway === 'home');
@@ -296,6 +296,7 @@ async function loadWeek(week, year) {
         venue: comp.venue?.fullName || '',
         venueLoc: [comp.venue?.address?.city, comp.venue?.address?.state].filter(Boolean).join(', '),
       };
+      espnByHome[espnGameMap[ev.id].homeTeam?.toLowerCase()] = espnGameMap[ev.id];
     });
 
     const [cfg, sheetData] = await Promise.all([
@@ -341,7 +342,7 @@ function render() {
     if (!games.length) return;
     content.appendChild(makeCatHeader(key, label));
     games.forEach(cfg => {
-      const live = espnGameMap[cfg.gameId] || null;
+      const live = espnGameMap[cfg.gameId] || espnByHome[cfg.homeTeam?.toLowerCase()] || null;
       const card = buildCard(cfg, live);
       content.appendChild(card);
       wireCard(card, cfg, live);

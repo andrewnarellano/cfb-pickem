@@ -229,8 +229,9 @@ function generateScoreSheet(data) {
   }
 
   function computePts(result, confidence, pickType) {
+    if (pickType === 'bonus') return result === 'WIN' ? 5 : 0;
     if (result === 'WIN') return confidence;
-    if (result === 'LOSS') return (pickType === 'ats' || pickType === 'ou' || pickType === 'bonus') ? -confidence : 0;
+    if (result === 'LOSS') return (pickType === 'ats' || pickType === 'ou') ? -confidence : 0;
     return 0;
   }
 
@@ -393,7 +394,7 @@ function generateScoreSheet(data) {
     PLAYERS.forEach((_, i) => {
       const c = pCol(i);
       sheet.getRange(row, c).setValue('Pick').setFontWeight('bold');
-      sheet.getRange(row, c + 1).setValue('Points').setFontWeight('bold');
+      sheet.getRange(row, c + 1).setValue('Pts (+5)').setFontWeight('bold');
     });
     row++;
 
@@ -418,8 +419,7 @@ function generateScoreSheet(data) {
         const pts = result !== null ? computePts(result, pick.confidence, 'bonus') : '';
         const bg = result === 'WIN' ? C_GREEN : result === 'LOSS' ? C_RED : null;
         sheet.getRange(row, c).setValue(pick.pickedTeam);
-        sheet.getRange(row, c + 1).setValue(pick.confidence);
-        if (pts !== '') sheet.getRange(row, c + 2).setValue(pts);
+        sheet.getRange(row, c + 1).setValue(pts !== '' ? pts : '');
         if (bg) sheet.getRange(row, c, 1, P_WIDTH).setBackground(bg);
         playerTotals[player] += (typeof pts === 'number' ? pts : 0);
       });

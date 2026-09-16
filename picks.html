@@ -577,11 +577,8 @@ function buildBonusCard(q) {
       <button class="bonus-btn" id="ba_${q.questionId}" ${locked ? 'disabled' : ''}>${q.optionA}</button>
       <button class="bonus-btn" id="bb_${q.questionId}" ${locked ? 'disabled' : ''}>${q.optionB}</button>
     </div>
-    <div style="padding:0 14px">
-      ${confHTML(q.questionId, locked, 'bonus')}
-    </div>
     <div class="game-footer">
-      <span class="deadline-text${locked ? ' closed' : ''}" id="dl_${q.questionId}">${locked ? 'Picks closed' : ''}</span>
+      <span class="deadline-text${locked ? ' closed' : ''}" id="dl_${q.questionId}">${locked ? 'Picks closed' : 'Correct = +5 pts'}</span>
       <span class="pick-status-badge" id="badge_${q.questionId}"></span>
     </div>
     <div class="picks-table-wrap" id="pt_${q.questionId}">
@@ -612,7 +609,6 @@ function wireBonusCard(card, q) {
 
   btnA.addEventListener('click', () => selectOpt(q.optionA));
   btnB.addEventListener('click', () => selectOpt(q.optionB));
-  wireConfRow(card, q.questionId, 'bonus');
 }
 
 // ── Shared wiring ─────────────────────────────────────────────────────────────
@@ -757,7 +753,7 @@ function allPickableIds() {
 
 function updateSubmitBar() {
   const pickable = allPickableIds();
-  const complete = pickable.filter(id => picks[id]?.team && picks[id]?.confidence);
+  const complete = pickable.filter(id => picks[id]?.team && (picks[id]?.pickType === 'bonus' || picks[id]?.confidence));
   document.getElementById('submitInfo').innerHTML = `<strong>${complete.length}</strong> of <strong>${pickable.length}</strong> picks set`;
   document.getElementById('submitBtn').disabled = complete.length === 0;
 }
@@ -810,10 +806,14 @@ function renderAllPicks() {
     wrap.classList.add('visible');
     tbody.innerHTML = gamePicks.map(p => {
       const res = computeResult(p.pickedTeam, String(p.gameId), p.pickType || 'ats');
+      const isBonus = p.pickType === 'bonus';
       const canLoseDisp = (p.pickType || 'ats') === 'ats' || p.pickType === 'ou';
-      const pts = res === 'WIN' ? `+${p.confidence}` : res === 'LOSS' ? (canLoseDisp ? `-${p.confidence}` : '0') : res === 'PUSH' ? '0' : '—';
+      const pts = isBonus
+        ? (res === 'WIN' ? '+5' : res === 'LOSS' ? '0' : '—')
+        : (res === 'WIN' ? `+${p.confidence}` : res === 'LOSS' ? (canLoseDisp ? `-${p.confidence}` : '0') : res === 'PUSH' ? '0' : '—');
       const cls = res === 'WIN' ? 'result-win' : res === 'LOSS' ? 'result-loss' : res === 'PUSH' ? 'result-push' : '';
-      return `<tr><td>${p.username}</td><td>${p.pickedTeam}</td><td><span class="conf-pill">${p.confidence}</span></td><td class="${cls}">${pts}</td></tr>`;
+      const confCol = isBonus ? '<span style="color:var(--faint);font-size:0.7rem">+5 flat</span>' : `<span class="conf-pill">${p.confidence}</span>`;
+      return `<tr><td>${p.username}</td><td>${p.pickedTeam}</td><td>${confCol}</td><td class="${cls}">${pts}</td></tr>`;
     }).join('');
   });
 }
@@ -850,8 +850,8 @@ document.getElementById('submitBtn').addEventListener('click', async () => {
   });
   bonusQuestions.forEach(q => {
     const p = picks[q.questionId];
-    if (!p?.team || !p?.confidence) return;
-    payload.push({ gameId: q.questionId, awayTeam: '', homeTeam: '', spreadDetail: '', spread: '', pickedTeam: p.team, confidence: p.confidence, pickType: 'bonus' });
+    if (!p?.team) return;
+    payload.push({ gameId: q.questionId, awayTeam: '', homeTeam: '', spreadDetail: '', spread: '', pickedTeam: p.team, confidence: 5, pickType: 'bonus' });
   });
 
   if (!payload.length) return;

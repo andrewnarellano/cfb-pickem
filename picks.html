@@ -249,7 +249,7 @@ const GAS_URL = 'https://script.google.com/macros/s/AKfycbxof2sk_1jM7YJLGbUALWdr
 const ESPN    = 'https://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard';
 
 let currentWeek = 1, currentYear = 2026;
-let configGames = [], bonusQuestions = [], espnGameMap = {}, espnByHome = {};
+let configGames = [], bonusQuestions = [], espnGameMap = {}, espnByHome = {}, espnByAway = {};
 let sheetPicks = [];
 let picks = {};
 let lockAt = null;
@@ -281,7 +281,7 @@ async function loadWeek(week, year) {
     document.getElementById('prevWeekBtn').disabled = currentWeek <= 1;
     document.getElementById('nextWeekBtn').disabled = false;
 
-    espnGameMap = {}; espnByHome = {};
+    espnGameMap = {}; espnByHome = {}; espnByAway = {};
     (espnData.events || []).forEach(ev => {
       const comp = ev.competitions[0];
       const home = comp.competitors.find(c => c.homeAway === 'home');
@@ -297,6 +297,7 @@ async function loadWeek(week, year) {
         venueLoc: [comp.venue?.address?.city, comp.venue?.address?.state].filter(Boolean).join(', '),
       };
       espnByHome[espnGameMap[ev.id].homeTeam?.toLowerCase()] = espnGameMap[ev.id];
+      espnByAway[espnGameMap[ev.id].awayTeam?.toLowerCase()] = espnGameMap[ev.id];
     });
 
     const [cfg, sheetData] = await Promise.all([
@@ -342,7 +343,7 @@ function render() {
     if (!games.length) return;
     content.appendChild(makeCatHeader(key, label));
     games.forEach(cfg => {
-      const live = espnGameMap[cfg.gameId] || espnByHome[cfg.homeTeam?.toLowerCase()] || null;
+      const live = espnGameMap[cfg.gameId] || espnByHome[cfg.homeTeam?.toLowerCase()] || espnByAway[cfg.awayTeam?.toLowerCase()] || null;
       const card = buildCard(cfg, live);
       content.appendChild(card);
       wireCard(card, cfg, live);
@@ -486,6 +487,7 @@ function wireCard(card, cfg, live) {
 
   function selectTeam(team) {
     picks[cfg.gameId] = { ...(picks[cfg.gameId] || {}), team, pickType: cfg.pickType };
+    [pa, ph].forEach(b => b.classList.remove('selected-su', 'selected-ats', 'faded'));
     pa.classList.toggle(selClass, team === cfg.awayTeam);
     pa.classList.toggle('faded',   team !== cfg.awayTeam);
     ph.classList.toggle(selClass, team === cfg.homeTeam);
@@ -633,7 +635,7 @@ function wireConfRow(card, id, pickType) {
       }
       picks[id] = { ...(picks[id] || {}), confidence: parseInt(btn.dataset.conf), pickType };
       if (pickType === 'su') suUsedConf[picks[id].confidence] = id;
-      card.querySelectorAll(`#conf_${id} .conf-btn`).forEach(b => b.classList.toggle('selected', b === btn));
+      btn.closest('.confidence-row').querySelectorAll('.conf-btn').forEach(b => b.classList.toggle('selected', b === btn));
       updateBadge(id);
       updateSubmitBar();
       if (pickType === 'su') refreshSuConfButtons();

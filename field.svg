@@ -1,71 +1,69 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 533" preserveAspectRatio="xMidYMid slice">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 533 1200" preserveAspectRatio="xMidYMid slice">
   <defs>
-    <!-- Hash marks at both NFL hash positions, every yard (every 10px along x) -->
-    <pattern id="h" x="100" y="0" width="10" height="533" patternUnits="userSpaceOnUse">
-      <line x1="5" y1="224" x2="5" y2="240" stroke="white" stroke-width="2.5" opacity="0.45"/>
-      <line x1="5" y1="293" x2="5" y2="309" stroke="white" stroke-width="2.5" opacity="0.45"/>
+    <!-- Hash marks at both hash positions, every yard (every 10px along y) -->
+    <pattern id="h" x="0" y="100" width="533" height="10" patternUnits="userSpaceOnUse">
+      <line x1="224" y1="5" x2="240" y2="5" stroke="white" stroke-width="2.5" opacity="0.45"/>
+      <line x1="293" y1="5" x2="309" y2="5" stroke="white" stroke-width="2.5" opacity="0.45"/>
     </pattern>
   </defs>
 
   <!-- ── End zones ── -->
-  <rect x="0"    y="0" width="100"  height="533" fill="#1a5c1a"/>
-  <rect x="1100" y="0" width="100"  height="533" fill="#1a5c1a"/>
+  <rect x="0" y="0"    width="533" height="100" fill="#1a5c1a"/>
+  <rect x="0" y="1100" width="533" height="100" fill="#1a5c1a"/>
 
   <!-- ── Alternating grass stripes (10 yards = 100px each) ── -->
-  <rect x="100"  y="0" width="100" height="533" fill="#2e8c2e"/>
-  <rect x="200"  y="0" width="100" height="533" fill="#267826"/>
-  <rect x="300"  y="0" width="100" height="533" fill="#2e8c2e"/>
-  <rect x="400"  y="0" width="100" height="533" fill="#267826"/>
-  <rect x="500"  y="0" width="100" height="533" fill="#2e8c2e"/>
-  <rect x="600"  y="0" width="100" height="533" fill="#267826"/>
-  <rect x="700"  y="0" width="100" height="533" fill="#2e8c2e"/>
-  <rect x="800"  y="0" width="100" height="533" fill="#267826"/>
-  <rect x="900"  y="0" width="100" height="533" fill="#2e8c2e"/>
-  <rect x="1000" y="0" width="100" height="533" fill="#267826"/>
+  <rect x="0" y="100"  width="533" height="100" fill="#2e8c2e"/>
+  <rect x="0" y="200"  width="533" height="100" fill="#267826"/>
+  <rect x="0" y="300"  width="533" height="100" fill="#2e8c2e"/>
+  <rect x="0" y="400"  width="533" height="100" fill="#267826"/>
+  <rect x="0" y="500"  width="533" height="100" fill="#2e8c2e"/>
+  <rect x="0" y="600"  width="533" height="100" fill="#267826"/>
+  <rect x="0" y="700"  width="533" height="100" fill="#2e8c2e"/>
+  <rect x="0" y="800"  width="533" height="100" fill="#267826"/>
+  <rect x="0" y="900"  width="533" height="100" fill="#2e8c2e"/>
+  <rect x="0" y="1000" width="533" height="100" fill="#267826"/>
 
   <!-- ── Sidelines ── -->
-  <line x1="100" y1="2"   x2="1100" y2="2"   stroke="white" stroke-width="4"   opacity="0.80"/>
-  <line x1="100" y1="531" x2="1100" y2="531" stroke="white" stroke-width="4"   opacity="0.80"/>
+  <line x1="2"   y1="100" x2="2"   y2="1100" stroke="white" stroke-width="4" opacity="0.80"/>
+  <line x1="531" y1="100" x2="531" y2="1100" stroke="white" stroke-width="4" opacity="0.80"/>
 
   <!-- ── Goal lines ── -->
-  <line x1="100"  y1="0" x2="100"  y2="533" stroke="white" stroke-width="5" opacity="0.90"/>
-  <line x1="1100" y1="0" x2="1100" y2="533" stroke="white" stroke-width="5" opacity="0.90"/>
+  <line x1="0" y1="100"  x2="533" y2="100"  stroke="white" stroke-width="5" opacity="0.90"/>
+  <line x1="0" y1="1100" x2="533" y2="1100" stroke="white" stroke-width="5" opacity="0.90"/>
 
-  <!-- ── 10-yard lines (no 5-yard lines — keeps segments wide and open) ── -->
-  <line x1="200"  y1="2" x2="200"  y2="531" stroke="white" stroke-width="3" opacity="0.70"/>
-  <line x1="300"  y1="2" x2="300"  y2="531" stroke="white" stroke-width="3" opacity="0.70"/>
-  <line x1="400"  y1="2" x2="400"  y2="531" stroke="white" stroke-width="3" opacity="0.70"/>
-  <line x1="500"  y1="2" x2="500"  y2="531" stroke="white" stroke-width="3" opacity="0.70"/>
-  <line x1="600"  y1="2" x2="600"  y2="531" stroke="white" stroke-width="4" opacity="0.80"/>
-  <line x1="700"  y1="2" x2="700"  y2="531" stroke="white" stroke-width="3" opacity="0.70"/>
-  <line x1="800"  y1="2" x2="800"  y2="531" stroke="white" stroke-width="3" opacity="0.70"/>
-  <line x1="900"  y1="2" x2="900"  y2="531" stroke="white" stroke-width="3" opacity="0.70"/>
-  <line x1="1000" y1="2" x2="1000" y2="531" stroke="white" stroke-width="3" opacity="0.70"/>
+  <!-- ── 10-yard lines ── -->
+  <line x1="2" y1="200"  x2="531" y2="200"  stroke="white" stroke-width="3" opacity="0.70"/>
+  <line x1="2" y1="300"  x2="531" y2="300"  stroke="white" stroke-width="3" opacity="0.70"/>
+  <line x1="2" y1="400"  x2="531" y2="400"  stroke="white" stroke-width="3" opacity="0.70"/>
+  <line x1="2" y1="500"  x2="531" y2="500"  stroke="white" stroke-width="3" opacity="0.70"/>
+  <line x1="2" y1="600"  x2="531" y2="600"  stroke="white" stroke-width="4" opacity="0.80"/>
+  <line x1="2" y1="700"  x2="531" y2="700"  stroke="white" stroke-width="3" opacity="0.70"/>
+  <line x1="2" y1="800"  x2="531" y2="800"  stroke="white" stroke-width="3" opacity="0.70"/>
+  <line x1="2" y1="900"  x2="531" y2="900"  stroke="white" stroke-width="3" opacity="0.70"/>
+  <line x1="2" y1="1000" x2="531" y2="1000" stroke="white" stroke-width="3" opacity="0.70"/>
 
   <!-- ── Hash marks across the entire play field ── -->
-  <rect x="100" y="0" width="1000" height="533" fill="url(#h)"/>
+  <rect x="0" y="100" width="533" height="1000" fill="url(#h)"/>
 
-  <!-- ── Numbers — near top sideline (normal orientation) ── -->
-  <text x="200"  y="70" text-anchor="middle" fill="white" opacity="0.65" font-size="52" font-family="Arial Black,Impact,sans-serif" font-weight="900" letter-spacing="6">10</text>
-  <text x="300"  y="70" text-anchor="middle" fill="white" opacity="0.65" font-size="52" font-family="Arial Black,Impact,sans-serif" font-weight="900" letter-spacing="6">20</text>
-  <text x="400"  y="70" text-anchor="middle" fill="white" opacity="0.65" font-size="52" font-family="Arial Black,Impact,sans-serif" font-weight="900" letter-spacing="6">30</text>
-  <text x="500"  y="70" text-anchor="middle" fill="white" opacity="0.65" font-size="52" font-family="Arial Black,Impact,sans-serif" font-weight="900" letter-spacing="6">40</text>
-  <text x="600"  y="70" text-anchor="middle" fill="white" opacity="0.72" font-size="52" font-family="Arial Black,Impact,sans-serif" font-weight="900" letter-spacing="6">50</text>
-  <text x="700"  y="70" text-anchor="middle" fill="white" opacity="0.65" font-size="52" font-family="Arial Black,Impact,sans-serif" font-weight="900" letter-spacing="6">40</text>
-  <text x="800"  y="70" text-anchor="middle" fill="white" opacity="0.65" font-size="52" font-family="Arial Black,Impact,sans-serif" font-weight="900" letter-spacing="6">30</text>
-  <text x="900"  y="70" text-anchor="middle" fill="white" opacity="0.65" font-size="52" font-family="Arial Black,Impact,sans-serif" font-weight="900" letter-spacing="6">20</text>
-  <text x="1000" y="70" text-anchor="middle" fill="white" opacity="0.65" font-size="52" font-family="Arial Black,Impact,sans-serif" font-weight="900" letter-spacing="6">10</text>
+  <!-- ── Numbers — near left sideline (reads bottom to top) ── -->
+  <text transform="rotate(-90,50,200)"  x="50" y="200"  text-anchor="middle" fill="white" opacity="0.65" font-size="52" font-family="Arial Black,Impact,sans-serif" font-weight="900" letter-spacing="6">10</text>
+  <text transform="rotate(-90,50,300)"  x="50" y="300"  text-anchor="middle" fill="white" opacity="0.65" font-size="52" font-family="Arial Black,Impact,sans-serif" font-weight="900" letter-spacing="6">20</text>
+  <text transform="rotate(-90,50,400)"  x="50" y="400"  text-anchor="middle" fill="white" opacity="0.65" font-size="52" font-family="Arial Black,Impact,sans-serif" font-weight="900" letter-spacing="6">30</text>
+  <text transform="rotate(-90,50,500)"  x="50" y="500"  text-anchor="middle" fill="white" opacity="0.65" font-size="52" font-family="Arial Black,Impact,sans-serif" font-weight="900" letter-spacing="6">40</text>
+  <text transform="rotate(-90,50,600)"  x="50" y="600"  text-anchor="middle" fill="white" opacity="0.72" font-size="52" font-family="Arial Black,Impact,sans-serif" font-weight="900" letter-spacing="6">50</text>
+  <text transform="rotate(-90,50,700)"  x="50" y="700"  text-anchor="middle" fill="white" opacity="0.65" font-size="52" font-family="Arial Black,Impact,sans-serif" font-weight="900" letter-spacing="6">40</text>
+  <text transform="rotate(-90,50,800)"  x="50" y="800"  text-anchor="middle" fill="white" opacity="0.65" font-size="52" font-family="Arial Black,Impact,sans-serif" font-weight="900" letter-spacing="6">30</text>
+  <text transform="rotate(-90,50,900)"  x="50" y="900"  text-anchor="middle" fill="white" opacity="0.65" font-size="52" font-family="Arial Black,Impact,sans-serif" font-weight="900" letter-spacing="6">20</text>
+  <text transform="rotate(-90,50,1000)" x="50" y="1000" text-anchor="middle" fill="white" opacity="0.65" font-size="52" font-family="Arial Black,Impact,sans-serif" font-weight="900" letter-spacing="6">10</text>
 
-  <!-- ── Numbers — near bottom sideline (rotated 180° so readable from other side) ── -->
-  <g transform="rotate(180,600,266.5)">
-    <text x="200"  y="70" text-anchor="middle" fill="white" opacity="0.65" font-size="52" font-family="Arial Black,Impact,sans-serif" font-weight="900" letter-spacing="6">10</text>
-    <text x="300"  y="70" text-anchor="middle" fill="white" opacity="0.65" font-size="52" font-family="Arial Black,Impact,sans-serif" font-weight="900" letter-spacing="6">20</text>
-    <text x="400"  y="70" text-anchor="middle" fill="white" opacity="0.65" font-size="52" font-family="Arial Black,Impact,sans-serif" font-weight="900" letter-spacing="6">30</text>
-    <text x="500"  y="70" text-anchor="middle" fill="white" opacity="0.65" font-size="52" font-family="Arial Black,Impact,sans-serif" font-weight="900" letter-spacing="6">40</text>
-    <text x="600"  y="70" text-anchor="middle" fill="white" opacity="0.72" font-size="52" font-family="Arial Black,Impact,sans-serif" font-weight="900" letter-spacing="6">50</text>
-    <text x="700"  y="70" text-anchor="middle" fill="white" opacity="0.65" font-size="52" font-family="Arial Black,Impact,sans-serif" font-weight="900" letter-spacing="6">40</text>
-    <text x="800"  y="70" text-anchor="middle" fill="white" opacity="0.65" font-size="52" font-family="Arial Black,Impact,sans-serif" font-weight="900" letter-spacing="6">30</text>
-    <text x="900"  y="70" text-anchor="middle" fill="white" opacity="0.65" font-size="52" font-family="Arial Black,Impact,sans-serif" font-weight="900" letter-spacing="6">20</text>
-    <text x="1000" y="70" text-anchor="middle" fill="white" opacity="0.65" font-size="52" font-family="Arial Black,Impact,sans-serif" font-weight="900" letter-spacing="6">10</text>
-  </g>
+  <!-- ── Numbers — near right sideline (reads top to bottom) ── -->
+  <text transform="rotate(90,483,200)"  x="483" y="200"  text-anchor="middle" fill="white" opacity="0.65" font-size="52" font-family="Arial Black,Impact,sans-serif" font-weight="900" letter-spacing="6">10</text>
+  <text transform="rotate(90,483,300)"  x="483" y="300"  text-anchor="middle" fill="white" opacity="0.65" font-size="52" font-family="Arial Black,Impact,sans-serif" font-weight="900" letter-spacing="6">20</text>
+  <text transform="rotate(90,483,400)"  x="483" y="400"  text-anchor="middle" fill="white" opacity="0.65" font-size="52" font-family="Arial Black,Impact,sans-serif" font-weight="900" letter-spacing="6">30</text>
+  <text transform="rotate(90,483,500)"  x="483" y="500"  text-anchor="middle" fill="white" opacity="0.65" font-size="52" font-family="Arial Black,Impact,sans-serif" font-weight="900" letter-spacing="6">40</text>
+  <text transform="rotate(90,483,600)"  x="483" y="600"  text-anchor="middle" fill="white" opacity="0.72" font-size="52" font-family="Arial Black,Impact,sans-serif" font-weight="900" letter-spacing="6">50</text>
+  <text transform="rotate(90,483,700)"  x="483" y="700"  text-anchor="middle" fill="white" opacity="0.65" font-size="52" font-family="Arial Black,Impact,sans-serif" font-weight="900" letter-spacing="6">40</text>
+  <text transform="rotate(90,483,800)"  x="483" y="800"  text-anchor="middle" fill="white" opacity="0.65" font-size="52" font-family="Arial Black,Impact,sans-serif" font-weight="900" letter-spacing="6">30</text>
+  <text transform="rotate(90,483,900)"  x="483" y="900"  text-anchor="middle" fill="white" opacity="0.65" font-size="52" font-family="Arial Black,Impact,sans-serif" font-weight="900" letter-spacing="6">20</text>
+  <text transform="rotate(90,483,1000)" x="483" y="1000" text-anchor="middle" fill="white" opacity="0.65" font-size="52" font-family="Arial Black,Impact,sans-serif" font-weight="900" letter-spacing="6">10</text>
 </svg>

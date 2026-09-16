@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 533" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <!-- Hash mark pattern: tiles every 50px (5 yards), marks at the two hash positions -->
+    <pattern id="hashes" x="150" y="0" width="50" height="533" patternUnits="userSpaceOnUse">
+      <line x1="0" y1="229" x2="0" y2="241" stroke="white" stroke-width="2.5" opacity="0.28"/>
+      <line x1="0" y1="292" x2="0" y2="304" stroke="white" stroke-width="2.5" opacity="0.28"/>
+    </pattern>
+  </defs>
+
+  <!-- ── Grass stripes ── -->
+  <!-- End zones (darkest) -->
+  <rect x="0"    y="0" width="100" height="533" fill="#0d240d"/>
+  <rect x="1100" y="0" width="100" height="533" fill="#0d240d"/>
+  <!-- Playing field: alternating light / dark every 10 yards (100px) -->
+  <rect x="100"  y="0" width="100" height="533" fill="#1d421d"/>
+  <rect x="200"  y="0" width="100" height="533" fill="#163516"/>
+  <rect x="300"  y="0" width="100" height="533" fill="#1d421d"/>
+  <rect x="400"  y="0" width="100" height="533" fill="#163516"/>
+  <rect x="500"  y="0" width="100" height="533" fill="#1d421d"/>
+  <rect x="600"  y="0" width="100" height="533" fill="#163516"/>
+  <rect x="700"  y="0" width="100" height="533" fill="#1d421d"/>
+  <rect x="800"  y="0" width="100" height="533" fill="#163516"/>
+  <rect x="900"  y="0" width="100" height="533" fill="#1d421d"/>
+  <rect x="1000" y="0" width="100" height="533" fill="#163516"/>
+
+  <!-- ── Sidelines ── -->
+  <line x1="100" y1="2"   x2="1100" y2="2"   stroke="white" stroke-width="3.5" opacity="0.55"/>
+  <line x1="100" y1="531" x2="1100" y2="531" stroke="white" stroke-width="3.5" opacity="0.55"/>
+
+  <!-- ── Goal lines ── -->
+  <line x1="100"  y1="0" x2="100"  y2="533" stroke="white" stroke-width="4" opacity="0.65"/>
+  <line x1="1100" y1="0" x2="1100" y2="533" stroke="white" stroke-width="4" opacity="0.65"/>
+
+  <!-- ── 10-yard lines ── -->
+  <line x1="200"  y1="2" x2="200"  y2="531" stroke="white" stroke-width="2.5" opacity="0.42"/>
+  <line x1="300"  y1="2" x2="300"  y2="531" stroke="white" stroke-width="2.5" opacity="0.42"/>
+  <line x1="400"  y1="2" x2="400"  y2="531" stroke="white" stroke-width="2.5" opacity="0.42"/>
+  <line x1="500"  y1="2" x2="500"  y2="531" stroke="white" stroke-width="2.5" opacity="0.42"/>
+  <line x1="600"  y1="2" x2="600"  y2="531" stroke="white" stroke-width="3"   opacity="0.50"/>
+  <line x1="700"  y1="2" x2="700"  y2="531" stroke="white" stroke-width="2.5" opacity="0.42"/>
+  <line x1="800"  y1="2" x2="800"  y2="531" stroke="white" stroke-width="2.5" opacity="0.42"/>
+  <line x1="900"  y1="2" x2="900"  y2="531" stroke="white" stroke-width="2.5" opacity="0.42"/>
+  <line x1="1000" y1="2" x2="1000" y2="531" stroke="white" stroke-width="2.5" opacity="0.42"/>
+
+  <!-- ── 5-yard lines ── -->
+  <line x1="150"  y1="2" x2="150"  y2="531" stroke="white" stroke-width="1.5" opacity="0.22"/>
+  <line x1="250"  y1="2" x2="250"  y2="531" stroke="white" stroke-width="1.5" opacity="0.22"/>
+  <line x1="350"  y1="2" x2="350"  y2="531" stroke="white" stroke-width="1.5" opacity="0.22"/>
+  <line x1="450"  y1="2" x2="450"  y2="531" stroke="white" stroke-width="1.5" opacity="0.22"/>
+  <line x1="550"  y1="2" x2="550"  y2="531" stroke="white" stroke-width="1.5" opacity="0.22"/>
+  <line x1="650"  y1="2" x2="650"  y2="531" stroke="white" stroke-width="1.5" opacity="0.22"/>
+  <line x1="750"  y1="2" x2="750"  y2="531" stroke="white" stroke-width="1.5" opacity="0.22"/>
+  <line x1="850"  y1="2" x2="850"  y2="531" stroke="white" stroke-width="1.5" opacity="0.22"/>
+  <line x1="950"  y1="2" x2="950"  y2="531" stroke="white" stroke-width="1.5" opacity="0.22"/>
+  <line x1="1050" y1="2" x2="1050" y2="531" stroke="white" stroke-width="1.5" opacity="0.22"/>
+
+  <!-- ── Hash marks (pattern tiles every 5 yards across the field) ── -->
+  <rect x="100" y="0" width="1000" height="533" fill="url(#hashes)"/>
+
+  <!-- ── Yard numbers — top (near y=2 sideline, normal orientation) ── -->
+  <text x="200"  y="72" text-anchor="middle" fill="white" opacity="0.38" font-size="52" font-family="Arial Black,Impact,sans-serif" font-weight="900" letter-spacing="6">10</text>
+  <text x="300"  y="72" text-anchor="middle" fill="white" opacity="0.38" font-size="52" font-family="Arial Black,Impact,sans-serif" font-weight="900" letter-spacing="6">20</text>
+  <text x="400"  y="72" text-anchor="middle" fill="white" opacity="0.38" font-size="52" font-family="Arial Black,Impact,sans-serif" font-weight="900" letter-spacing="6">30</text>
+  <text x="500"  y="72" text-anchor="middle" fill="white" opacity="0.38" font-size="52" font-family="Arial Black,Impact,sans-serif" font-weight="900" letter-spacing="6">40</text>
+  <text x="600"  y="72" text-anchor="middle" fill="white" opacity="0.42" font-size="52" font-family="Arial Black,Impact,sans-serif" font-weight="900" letter-spacing="6">50</text>
+  <text x="700"  y="72" text-anchor="middle" fill="white" opacity="0.38" font-size="52" font-family="Arial Black,Impact,sans-serif" font-weight="900" letter-spacing="6">40</text>
+  <text x="800"  y="72" text-anchor="middle" fill="white" opacity="0.38" font-size="52" font-family="Arial Black,Impact,sans-serif" font-weight="900" letter-spacing="6">30</text>
+  <text x="900"  y="72" text-anchor="middle" fill="white" opacity="0.38" font-size="52" font-family="Arial Black,Impact,sans-serif" font-weight="900" letter-spacing="6">20</text>
+  <text x="1000" y="72" text-anchor="middle" fill="white" opacity="0.38" font-size="52" font-family="Arial Black,Impact,sans-serif" font-weight="900" letter-spacing="6">10</text>
+
+  <!-- ── Yard numbers — bottom (near y=531 sideline, rotated 180° so readable from other sideline) ── -->
+  <g transform="rotate(180,600,266.5)">
+    <text x="200"  y="72" text-anchor="middle" fill="white" opacity="0.38" font-size="52" font-family="Arial Black,Impact,sans-serif" font-weight="900" letter-spacing="6">10</text>
+    <text x="300"  y="72" text-anchor="middle" fill="white" opacity="0.38" font-size="52" font-family="Arial Black,Impact,sans-serif" font-weight="900" letter-spacing="6">20</text>
+    <text x="400"  y="72" text-anchor="middle" fill="white" opacity="0.38" font-size="52" font-family="Arial Black,Impact,sans-serif" font-weight="900" letter-spacing="6">30</text>
+    <text x="500"  y="72" text-anchor="middle" fill="white" opacity="0.38" font-size="52" font-family="Arial Black,Impact,sans-serif" font-weight="900" letter-spacing="6">40</text>
+    <text x="600"  y="72" text-anchor="middle" fill="white" opacity="0.42" font-size="52" font-family="Arial Black,Impact,sans-serif" font-weight="900" letter-spacing="6">50</text>
+    <text x="700"  y="72" text-anchor="middle" fill="white" opacity="0.38" font-size="52" font-family="Arial Black,Impact,sans-serif" font-weight="900" letter-spacing="6">40</text>
+    <text x="800"  y="72" text-anchor="middle" fill="white" opacity="0.38" font-size="52" font-family="Arial Black,Impact,sans-serif" font-weight="900" letter-spacing="6">30</text>
+    <text x="900"  y="72" text-anchor="middle" fill="white" opacity="0.38" font-size="52" font-family="Arial Black,Impact,sans-serif" font-weight="900" letter-spacing="6">20</text>
+    <text x="1000" y="72" text-anchor="middle" fill="white" opacity="0.38" font-size="52" font-family="Arial Black,Impact,sans-serif" font-weight="900" letter-spacing="6">10</text>
+  </g>
+</svg>

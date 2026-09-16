@@ -21,7 +21,8 @@
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html { background: var(--bg); -webkit-text-size-adjust: 100%; }
-    body { background: var(--bg); min-height: 100vh; font-family: 'Montserrat', sans-serif; color: var(--text); padding-left: env(safe-area-inset-left); padding-right: env(safe-area-inset-right); }
+    body { background: transparent; min-height: 100vh; font-family: 'Montserrat', sans-serif; color: var(--text); padding-left: env(safe-area-inset-left); padding-right: env(safe-area-inset-right); }
+    body::before { content: ''; position: fixed; inset: 0; z-index: -1; background: url('field.svg') center/cover; opacity: 0.18; pointer-events: none; }
 
     header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 10; }
     .header-left h1 { font-size: 1.1rem; font-weight: 800; font-family: 'Sofia Sans Extra Condensed', sans-serif; letter-spacing: 0.5px; }

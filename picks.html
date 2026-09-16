@@ -621,13 +621,23 @@ function wireBonusCard(card, q) {
 function wireConfRow(card, id, pickType) {
   card.querySelectorAll(`#conf_${id} .conf-btn`).forEach(btn => {
     btn.addEventListener('click', () => {
-      if (pickType === 'su') {
-        const oldConf = picks[id]?.confidence;
-        if (oldConf) delete suUsedConf[oldConf];
+      const clicked = parseInt(btn.dataset.conf);
+      const current = picks[id]?.confidence;
+      const confBtns = btn.closest('.confidence-row').querySelectorAll('.conf-btn');
+      if (current === clicked) {
+        // Deselect
+        if (pickType === 'su') delete suUsedConf[clicked];
+        if (picks[id]) delete picks[id].confidence;
+        confBtns.forEach(b => b.classList.remove('selected'));
+      } else {
+        // Select new
+        if (pickType === 'su') {
+          if (current) delete suUsedConf[current];
+          suUsedConf[clicked] = id;
+        }
+        picks[id] = { ...(picks[id] || {}), confidence: clicked, pickType };
+        confBtns.forEach(b => b.classList.toggle('selected', b === btn));
       }
-      picks[id] = { ...(picks[id] || {}), confidence: parseInt(btn.dataset.conf), pickType };
-      if (pickType === 'su') suUsedConf[picks[id].confidence] = id;
-      btn.closest('.confidence-row').querySelectorAll('.conf-btn').forEach(b => b.classList.toggle('selected', b === btn));
       updateBadge(id);
       updateSubmitBar();
       if (pickType === 'su') refreshSuConfButtons();
@@ -674,12 +684,12 @@ function initSuUsedConf() {
 
 function refreshSuConfButtons() {
   configGames.filter(g => g.pickType === 'su').forEach(g => {
-    const confRow = document.getElementById(`conf_${g.gameId}`);
-    if (!confRow) return;
-    confRow.querySelectorAll('.conf-btn').forEach(btn => {
+    const card = document.getElementById(`game_${g.gameId}`);
+    if (!card) return;
+    card.querySelectorAll('.confidence-row .conf-btn').forEach(btn => {
       const n = parseInt(btn.dataset.conf);
       const usedBy = suUsedConf[n];
-      btn.disabled = !!(usedBy && usedBy !== g.gameId);
+      btn.disabled = !!(usedBy && String(usedBy) !== String(g.gameId));
     });
   });
 }

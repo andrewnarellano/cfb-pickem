@@ -740,9 +740,12 @@ function updateBadge(id) {
   if (p?.team && p?.confidence) {
     badge.textContent = `${p.team} · ${p.confidence}`;
     badge.className = 'pick-status-badge set';
+  } else if (p?.team && p?.pickType === 'bonus') {
+    badge.textContent = p.team;
+    badge.className = 'pick-status-badge set';
   } else if (p?.team) {
     badge.textContent = 'Pick confidence';
-    badge.className = 'pick-status-badge set';
+    badge.className = 'pick-status-badge';
   } else {
     badge.textContent = ''; badge.className = 'pick-status-badge';
   }

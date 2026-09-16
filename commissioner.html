@@ -358,26 +358,6 @@ async function loadWeek(week, year) {
   renderSections();
   renderBonusList();
   updateSaveBar();
-
-  try {
-    const cfg = await fetch(`${GAS_URL}?action=getWeekConfig&week=${week}&year=${year}`).then(r => r.json());
-    if (cfg.games?.length) {
-      cfg.games.forEach(g => {
-        selectedGames[g.gameId] = {
-          game: { id: g.gameId, awayTeam: g.awayTeam, homeTeam: g.homeTeam, spreadDetail: g.spreadDetail, spread: g.spread },
-          pickType: g.pickType, total: g.total,
-        };
-      });
-    }
-    if (cfg.bonusQuestions?.length) {
-      bonusQuestions = cfg.bonusQuestions.map(q => ({ questionText: q.questionText, optionA: q.optionA, optionB: q.optionB, questionId: q.questionId }));
-    }
-    renderSections();
-    renderBonusList();
-    renderBonusResults(cfg.bonusQuestions || []);
-    updateSaveBar();
-  } catch(e) {}
-
   loadEspn();
 }
 
@@ -405,6 +385,27 @@ async function loadEspn() {
 
     espnGames = parseEspnGames(allEvents);
     document.getElementById('gameColCount').textContent = `${espnGames.length} games`;
+
+    // Load saved config from sheet (source of truth for all browsers)
+    try {
+      const cfg = await fetch(`${GAS_URL}?action=getWeekConfig&week=${currentWeek}&year=${currentYear}`).then(r => r.json());
+      if (cfg.games?.length) {
+        cfg.games.forEach(g => {
+          selectedGames[g.gameId] = {
+            game: { id: g.gameId, awayTeam: g.awayTeam, homeTeam: g.homeTeam, spreadDetail: g.spreadDetail, spread: g.spread },
+            pickType: g.pickType, total: g.total,
+          };
+        });
+      }
+      if (cfg.bonusQuestions?.length) {
+        bonusQuestions = cfg.bonusQuestions.map(q => ({ questionText: q.questionText, optionA: q.optionA, optionB: q.optionB, questionId: q.questionId }));
+      }
+      renderSections();
+      renderBonusList();
+      renderBonusResults(cfg.bonusQuestions || []);
+    } catch(e) {}
+
+    // Merge any local draft progress not yet saved to sheet
     loadProgress(currentWeek, currentYear);
     renderEspnList();
     updateSaveBar();

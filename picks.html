@@ -463,10 +463,6 @@ function buildCard(cfg, live) {
 
   card.innerHTML = `
     <div class="game-header">
-      <div>
-        <span class="game-time">${timeStr}</span>
-        ${venueStr ? `<div class="game-venue">${venueStr}</div>` : ''}
-      </div>
       <span class="game-status ${statusCls}">${statusText}</span>
     </div>
     <div class="game-body">${body}</div>
@@ -543,10 +539,6 @@ function buildOUCard(cfg, live) {
 
   card.innerHTML = `
     <div class="game-header">
-      <div>
-        <span class="game-time">${timeStr}</span>
-        ${venueStr ? `<div class="game-venue">${venueStr}</div>` : ''}
-      </div>
       <span class="game-status ${statusCls}">${statusText}</span>
     </div>
     <div class="game-body">${body}</div>

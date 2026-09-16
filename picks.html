@@ -24,7 +24,8 @@
     body { background: transparent; min-height: 100vh; font-family: 'Montserrat', sans-serif; color: var(--text); padding-left: env(safe-area-inset-left); padding-right: env(safe-area-inset-right); }
     body::before { content: ''; position: fixed; inset: 0; z-index: -1; background: url('field.svg') center/cover; opacity: 0.82; pointer-events: none; }
 
-    header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 10; }
+    .sticky-top { position: sticky; top: 0; z-index: 10; }
+    header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; }
     .header-left h1 { font-size: 1.1rem; font-weight: 800; font-family: 'Sofia Sans Extra Condensed', sans-serif; letter-spacing: 0.5px; }
     .header-left .subtitle { font-size: 1rem; color: var(--yellow); margin-top: 2px; font-weight: 700; }
     .nav-buttons { display: flex; gap: 8px; }
@@ -46,11 +47,11 @@
     .week-nav-btn:hover:not(:disabled) { color: var(--text); border-color: rgba(255,255,255,0.2); }
     .week-nav-btn:disabled { opacity: 0.3; cursor: default; }
 
-    .user-bar { padding: 10px 24px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border); }
-    .user-label { font-size: 0.75rem; color: var(--muted); }
-    .user-name { font-size: 0.85rem; font-weight: 700; }
-    .user-change { background: none; border: 1px solid var(--border); color: var(--muted); border-radius: 5px; padding: 4px 10px; font-size: 0.72rem; font-weight: 600; cursor: pointer; margin-left: auto; transition: all 0.15s; font-family: inherit; }
-    .user-change:hover { color: var(--text); border-color: rgba(255,255,255,0.2); }
+    .user-bar { background: var(--maroon); padding: 10px 24px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid rgba(0,0,0,0.25); }
+    .user-label { font-size: 0.75rem; color: rgba(255,255,255,0.7); }
+    .user-name { font-size: 0.85rem; font-weight: 700; color: #fff; }
+    .user-change { background: none; border: 1px solid rgba(255,255,255,0.35); color: rgba(255,255,255,0.75); border-radius: 5px; padding: 4px 10px; font-size: 0.72rem; font-weight: 600; cursor: pointer; margin-left: auto; transition: all 0.15s; font-family: inherit; }
+    .user-change:hover { color: #fff; border-color: rgba(255,255,255,0.7); }
 
     .content { padding: 20px 20px 100px; max-width: 680px; margin: 0 auto; }
     .loading { text-align: center; padding: 60px 20px; color: var(--muted); font-size: 0.9rem; }
@@ -175,40 +176,42 @@
 </head>
 <body>
 
-<header>
-  <div class="header-left">
-    <h1>CFB Pick'em</h1>
-    <div class="subtitle">2026 Season</div>
-  </div>
-  <div class="nav-buttons">
-    <a href="picks.html" class="nav-btn active">Picks</a>
-    <a href="scoreboard.html" class="nav-btn">Scoreboard</a>
-    <a href="standings.html" class="nav-btn">Standings</a>
-    <a href="commissioner.html" class="nav-btn">Commissioner</a>
-  </div>
-  <button class="hamburger" id="hamburger" aria-label="Menu">&#9776;
-    <div class="nav-dropdown" id="navDropdown">
-      <a href="picks.html" class="active">Picks</a>
-      <a href="scoreboard.html">Scoreboard</a>
-      <a href="standings.html">Standings</a>
-      <a href="commissioner.html">Commissioner</a>
+<div class="sticky-top">
+  <header>
+    <div class="header-left">
+      <h1>CFB Pick'em</h1>
+      <div class="subtitle">2026 Season</div>
     </div>
-  </button>
-</header>
+    <div class="nav-buttons">
+      <a href="picks.html" class="nav-btn active">Picks</a>
+      <a href="scoreboard.html" class="nav-btn">Scoreboard</a>
+      <a href="standings.html" class="nav-btn">Standings</a>
+      <a href="commissioner.html" class="nav-btn">Commissioner</a>
+    </div>
+    <button class="hamburger" id="hamburger" aria-label="Menu">&#9776;
+      <div class="nav-dropdown" id="navDropdown">
+        <a href="picks.html" class="active">Picks</a>
+        <a href="scoreboard.html">Scoreboard</a>
+        <a href="standings.html">Standings</a>
+        <a href="commissioner.html">Commissioner</a>
+      </div>
+    </button>
+  </header>
 
-<div class="week-bar">
-  <button class="week-nav-btn" id="prevWeekBtn" disabled>&#8592; Prev</button>
-  <span class="week-label" id="weekLabel">Loading...</span>
-  <button class="week-nav-btn" id="nextWeekBtn" disabled>Next &#8594;</button>
+  <div class="week-bar">
+    <button class="week-nav-btn" id="prevWeekBtn" disabled>&#8592; Prev</button>
+    <span class="week-label" id="weekLabel">Loading...</span>
+    <button class="week-nav-btn" id="nextWeekBtn" disabled>Next &#8594;</button>
+  </div>
+
+  <div class="user-bar">
+    <span class="user-label">Picking as:</span>
+    <span class="user-name" id="userName">—</span>
+    <button class="user-change" id="userChangeBtn">Change</button>
+  </div>
+
+  <div id="lockBanner" class="lock-banner" style="display:none"></div>
 </div>
-
-<div class="user-bar">
-  <span class="user-label">Picking as:</span>
-  <span class="user-name" id="userName">—</span>
-  <button class="user-change" id="userChangeBtn">Change</button>
-</div>
-
-<div id="lockBanner" class="lock-banner" style="display:none"></div>
 
 <div class="content" id="content">
   <div class="loading">Loading games...</div>

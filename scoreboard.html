@@ -137,8 +137,9 @@ const GAS_URL = 'https://script.google.com/macros/s/AKfycbxof2sk_1jM7YJLGbUALWdr
 const ESPN    = 'https://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard';
 
 let currentWeek = 1, currentYear = 2026;
-let refreshTimer = null;
+let refreshTimer = null, revealTimer = null;
 let weekConfig = { games: [], bonusQuestions: [] };
+let lockAt = null;
 
 loadWeek(null, null);
 
@@ -157,6 +158,17 @@ async function loadWeek(week, year) {
     document.getElementById('weekLabel').textContent = `WEEK ${currentWeek} · ${currentYear} SEASON`;
     document.getElementById('prevWeekBtn').disabled = currentWeek <= 1;
     document.getElementById('nextWeekBtn').disabled = false;
+
+    // Compute lock time = earliest kickoff among configured games
+    const evMap = {};
+    (espnData.events || []).forEach(ev => { evMap[ev.id] = ev.date; });
+    lockAt = weekConfig.games.reduce((min, g) => {
+      const d = evMap[g.gameId] || g.gameDate;
+      if (!d) return min;
+      const t = new Date(d).getTime();
+      return min === null ? t : Math.min(min, t);
+    }, null);
+
     render(espnData, sheetPicks);
     document.getElementById('lastUpdated').textContent = 'Updated ' + new Date().toLocaleTimeString();
     scheduleRefresh();
@@ -222,6 +234,16 @@ function computeResult(pickedTeam, gameId, pickType, espnMap) {
 function render(espnData, sheetPicks) {
   const espnMap = parseEspnGames(espnData.events || []);
   const content = document.getElementById('content');
+
+  // Block until 10 min after lock
+  const revealAt = lockAt ? lockAt + 10 * 60 * 1000 : null;
+  if (revealAt && Date.now() < revealAt) {
+    const revealTime = new Date(revealAt).toLocaleString('en-US', { weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', timeZoneName: 'short' });
+    content.innerHTML = `<div class="loading" style="padding:60px 20px">🔒 Picks are locked.<br><span style="font-size:0.8rem;color:var(--muted);margin-top:8px;display:block">Scoreboard reveals ${revealTime}</span></div>`;
+    if (revealTimer) clearTimeout(revealTimer);
+    revealTimer = setTimeout(() => loadWeek(currentWeek, currentYear), revealAt - Date.now());
+    return;
+  }
 
   if (!sheetPicks.length) {
     content.innerHTML = '<div class="loading">No picks submitted yet for this week.</div>';

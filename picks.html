@@ -395,7 +395,7 @@ function confHTML(id, locked, pickType) {
 
 function cardFooterHTML(id, locked, lockTimeStr) {
   return `<div class="game-footer">
-    <span class="deadline-text${locked ? ' closed' : ''}" id="dl_${id}">${locked ? 'Picks closed' : (lockTimeStr ? 'Closes ' + lockTimeStr : '')}</span>
+    <span class="deadline-text${locked ? ' closed' : ''}" id="dl_${id}">${locked ? 'Picks closed' : ''}</span>
     <span class="pick-status-badge" id="badge_${id}"></span>
   </div>
   <div class="picks-table-wrap" id="pt_${id}">

@@ -143,6 +143,9 @@
     .submit-btn-main { background: var(--maroon); color: #fff; border: none; padding: 11px 28px; border-radius: 7px; font-weight: 700; font-size: 0.88rem; cursor: pointer; white-space: nowrap; font-family: inherit; transition: background 0.15s; }
     .submit-btn-main:hover:not([disabled]) { background: #6b0000; }
     .submit-btn-main[disabled] { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.3); cursor: not-allowed; }
+    .save-btn { background: transparent; color: var(--muted); border: 1px solid var(--border); padding: 11px 18px; border-radius: 7px; font-weight: 700; font-size: 0.88rem; cursor: pointer; white-space: nowrap; font-family: inherit; transition: all 0.15s; }
+    .save-btn:hover { color: var(--text); border-color: rgba(255,255,255,0.2); }
+    .save-btn.saved { color: var(--green); border-color: var(--green); }
 
     .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.72); z-index: 200; align-items: center; justify-content: center; padding: 20px; }
     .modal-overlay.open { display: flex; }
@@ -212,7 +215,10 @@
 
 <div class="submit-bar" id="submitBar" style="display:none">
   <span class="submit-info" id="submitInfo"></span>
-  <button class="submit-btn-main" id="submitBtn" disabled>Submit Picks</button>
+  <div style="display:flex;gap:8px">
+    <button class="save-btn" id="saveBtn">Save Progress</button>
+    <button class="submit-btn-main" id="submitBtn" disabled>Submit Picks</button>
+  </div>
 </div>
 
 <div class="modal-overlay" id="modalOverlay">
@@ -867,6 +873,14 @@ document.getElementById('submitBtn').addEventListener('click', async () => {
     btn.textContent = 'Error — Try Again';
     btn.disabled = false;
   }
+});
+
+document.getElementById('saveBtn').addEventListener('click', () => {
+  saveLocalPicks();
+  const btn = document.getElementById('saveBtn');
+  btn.textContent = 'Saved!';
+  btn.classList.add('saved');
+  setTimeout(() => { btn.textContent = 'Save Progress'; btn.classList.remove('saved'); }, 2000);
 });
 
 document.getElementById('prevWeekBtn').addEventListener('click', () => loadWeek(currentWeek - 1, currentYear));

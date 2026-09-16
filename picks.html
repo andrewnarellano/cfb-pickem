@@ -157,6 +157,10 @@
     .modal-cancel { background: rgba(255,255,255,0.07); color: var(--text); border: none; padding: 9px 16px; border-radius: 6px; font-weight: 700; font-size: 0.82rem; cursor: pointer; font-family: inherit; }
     .modal-confirm { background: var(--maroon); color: #fff; border: none; padding: 9px 20px; border-radius: 6px; font-weight: 700; font-size: 0.82rem; cursor: pointer; font-family: 'Spectral', serif; }
 
+    .lock-banner { padding: 9px 24px; background: rgba(252,227,0,0.08); border-bottom: 1px solid rgba(252,227,0,0.18); font-size: 0.82rem; font-weight: 700; color: var(--yellow); text-align: center; letter-spacing: 0.4px; }
+    .lock-banner.closed { background: rgba(239,68,68,0.08); border-bottom-color: rgba(239,68,68,0.2); color: var(--red); }
+    .game-venue { font-size: 0.6rem; color: var(--faint); margin-top: 2px; }
+
     @media (max-width: 500px) {
       .content { padding: 14px 12px 100px; }
       .week-bar, .user-bar { padding: 10px 14px; }
@@ -200,6 +204,8 @@
   <button class="user-change" id="userChangeBtn">Change</button>
 </div>
 
+<div id="lockBanner" class="lock-banner" style="display:none"></div>
+
 <div class="content" id="content">
   <div class="loading">Loading games...</div>
 </div>
@@ -237,6 +243,7 @@ let configGames = [], bonusQuestions = [], espnGameMap = {};
 let sheetPicks = [];
 let picks = {};
 let lockAt = null;
+let suUsedConf = {};
 let userName = localStorage.getItem('cfb_username') || '';
 let nameForced = false;
 
@@ -276,6 +283,8 @@ async function loadWeek(week, year) {
         awayTeam: away.team.displayName, awayAbbr: away.team.abbreviation, awayScore: parseInt(away.score) || 0,
         state: st?.state || 'pre', completed: st?.completed || false,
         statusShort: st?.shortDetail || '',
+        venue: comp.venue?.fullName || '',
+        venueLoc: [comp.venue?.address?.city, comp.venue?.address?.state].filter(Boolean).join(', '),
       };
     });
 
@@ -343,6 +352,9 @@ function render() {
   document.getElementById('submitBar').style.display = 'flex';
   updateSubmitBar();
   renderAllPicks();
+  updateLockBanner();
+  initSuUsedConf();
+  refreshSuConfButtons();
   scheduleGlobalLock();
 }
 
@@ -355,11 +367,16 @@ function makeCatHeader(key, label) {
 
 // ── Shared card footer / conf HTML ────────────────────────────────────────────
 
-function confHTML(id, locked) {
+function confHTML(id, locked, pickType) {
+  const wideRange = pickType === 'su' || pickType === 'bonus';
+  const nums = wideRange ? [1,2,3,4,5,6,7,8,9,10] : [5,6,7,8,9,10];
+  const label = pickType === 'su'
+    ? 'Confidence (1–10, each number once per section)'
+    : (wideRange ? 'Confidence (1–10)' : 'Confidence (5–10 only)');
   return `<div class="confidence-row" id="conf_${id}">
-    <span class="conf-label">Confidence (1 low → 10 high)</span>
+    <span class="conf-label">${label}</span>
     <div class="conf-btns">
-      ${[1,2,3,4,5,6,7,8,9,10].map(n => `<button class="conf-btn" data-conf="${n}" ${locked ? 'disabled' : ''}>${n}</button>`).join('')}
+      ${nums.map(n => `<button class="conf-btn" data-conf="${n}" ${locked ? 'disabled' : ''}>${n}</button>`).join('')}
     </div>
   </div>`;
 }
@@ -393,6 +410,7 @@ function buildCard(cfg, live) {
   const statusText = live?.state === 'in' ? '● LIVE' : live?.completed ? 'FINAL' : '';
   const statusCls  = live?.state === 'in' ? 'live'  : live?.completed ? 'final' : '';
   const isAts = cfg.pickType === 'ats';
+  const venueStr = live ? [live.venue, live.venueLoc].filter(Boolean).join(' · ') : '';
 
   let body;
   if (live && (live.state === 'in' || live.completed)) {
@@ -428,12 +446,15 @@ function buildCard(cfg, live) {
         ${isAts && hSp ? `<span class="btn-spread">${hSp}</span>` : ''}
       </button>
     </div>
-    ${confHTML(cfg.gameId, locked)}`;
+    ${confHTML(cfg.gameId, locked, cfg.pickType)}`;
   }
 
   card.innerHTML = `
     <div class="game-header">
-      <span class="game-time">${timeStr}</span>
+      <div>
+        <span class="game-time">${timeStr}</span>
+        ${venueStr ? `<div class="game-venue">${venueStr}</div>` : ''}
+      </div>
       <span class="game-status ${statusCls}">${statusText}</span>
     </div>
     <div class="game-body">${body}</div>
@@ -481,6 +502,7 @@ function buildOUCard(cfg, live) {
   const lockTime = lockAt ? new Date(lockAt).toLocaleTimeString('en-US', { hour:'numeric', minute:'2-digit', timeZoneName:'short' }) : (date ? date.toLocaleTimeString('en-US', { hour:'numeric', minute:'2-digit', timeZoneName:'short' }) : '');
   const statusText = live?.state === 'in' ? '● LIVE' : live?.completed ? 'FINAL' : '';
   const statusCls  = live?.state === 'in' ? 'live'  : live?.completed ? 'final' : '';
+  const venueStr = live ? [live.venue, live.venueLoc].filter(Boolean).join(' · ') : '';
 
   let body;
   if (live && (live.state === 'in' || live.completed)) {
@@ -503,12 +525,15 @@ function buildOUCard(cfg, live) {
         ${cfg.total ? `<span style="font-size:0.68rem;color:var(--muted)">${cfg.total}</span>` : ''}
       </button>
     </div>
-    ${confHTML(cfg.gameId, locked)}`;
+    ${confHTML(cfg.gameId, locked, 'ou')}`;
   }
 
   card.innerHTML = `
     <div class="game-header">
-      <span class="game-time">${timeStr}</span>
+      <div>
+        <span class="game-time">${timeStr}</span>
+        ${venueStr ? `<div class="game-venue">${venueStr}</div>` : ''}
+      </div>
       <span class="game-status ${statusCls}">${statusText}</span>
     </div>
     <div class="game-body">${body}</div>
@@ -545,17 +570,18 @@ function buildBonusCard(q) {
   const card = document.createElement('div');
   card.className = 'bonus-card';
   card.id = `game_${q.questionId}`;
+  const locked = lockAt !== null && Date.now() >= lockAt;
   card.innerHTML = `
     <div class="bonus-question">${q.questionText}</div>
     <div class="bonus-opts">
-      <button class="bonus-btn" id="ba_${q.questionId}">${q.optionA}</button>
-      <button class="bonus-btn" id="bb_${q.questionId}">${q.optionB}</button>
+      <button class="bonus-btn" id="ba_${q.questionId}" ${locked ? 'disabled' : ''}>${q.optionA}</button>
+      <button class="bonus-btn" id="bb_${q.questionId}" ${locked ? 'disabled' : ''}>${q.optionB}</button>
     </div>
     <div style="padding:0 14px">
-      ${confHTML(q.questionId, false)}
+      ${confHTML(q.questionId, locked, 'bonus')}
     </div>
     <div class="game-footer">
-      <span></span>
+      <span class="deadline-text${locked ? ' closed' : ''}" id="dl_${q.questionId}">${locked ? 'Picks closed' : ''}</span>
       <span class="pick-status-badge" id="badge_${q.questionId}"></span>
     </div>
     <div class="picks-table-wrap" id="pt_${q.questionId}">
@@ -568,6 +594,7 @@ function buildBonusCard(q) {
 }
 
 function wireBonusCard(card, q) {
+  if (lockAt !== null && Date.now() >= lockAt) return;
   const btnA    = card.querySelector(`#ba_${q.questionId}`);
   const btnB    = card.querySelector(`#bb_${q.questionId}`);
   const confRow = card.querySelector(`#conf_${q.questionId}`);
@@ -593,10 +620,16 @@ function wireBonusCard(card, q) {
 function wireConfRow(card, id, pickType) {
   card.querySelectorAll(`#conf_${id} .conf-btn`).forEach(btn => {
     btn.addEventListener('click', () => {
+      if (pickType === 'su') {
+        const oldConf = picks[id]?.confidence;
+        if (oldConf) delete suUsedConf[oldConf];
+      }
       picks[id] = { ...(picks[id] || {}), confidence: parseInt(btn.dataset.conf), pickType };
+      if (pickType === 'su') suUsedConf[picks[id].confidence] = id;
       card.querySelectorAll(`#conf_${id} .conf-btn`).forEach(b => b.classList.toggle('selected', b === btn));
       updateBadge(id);
       updateSubmitBar();
+      if (pickType === 'su') refreshSuConfButtons();
     });
   });
 }
@@ -611,7 +644,43 @@ function scheduleGlobalLock() {
       el.textContent = 'Picks closed';
       el.classList.add('closed');
     });
+    updateLockBanner();
   }, msLeft);
+}
+
+function updateLockBanner() {
+  const banner = document.getElementById('lockBanner');
+  if (!banner) return;
+  if (!lockAt) { banner.style.display = 'none'; return; }
+  banner.style.display = '';
+  if (Date.now() >= lockAt) {
+    banner.textContent = 'Board is closed — no more picks accepted';
+    banner.classList.add('closed');
+  } else {
+    const lockTime = new Date(lockAt).toLocaleString('en-US', { weekday:'short', month:'short', day:'numeric', hour:'numeric', minute:'2-digit', timeZoneName:'short' });
+    banner.textContent = `Board closes ${lockTime} — all picks lock at first kickoff`;
+    banner.classList.remove('closed');
+  }
+}
+
+function initSuUsedConf() {
+  suUsedConf = {};
+  configGames.filter(g => g.pickType === 'su').forEach(g => {
+    const conf = picks[g.gameId]?.confidence;
+    if (conf) suUsedConf[conf] = g.gameId;
+  });
+}
+
+function refreshSuConfButtons() {
+  configGames.filter(g => g.pickType === 'su').forEach(g => {
+    const confRow = document.getElementById(`conf_${g.gameId}`);
+    if (!confRow) return;
+    confRow.querySelectorAll('.conf-btn').forEach(btn => {
+      const n = parseInt(btn.dataset.conf);
+      const usedBy = suUsedConf[n];
+      btn.disabled = !!(usedBy && usedBy !== g.gameId);
+    });
+  });
 }
 
 // ── Apply saved picks to UI ───────────────────────────────────────────────────
